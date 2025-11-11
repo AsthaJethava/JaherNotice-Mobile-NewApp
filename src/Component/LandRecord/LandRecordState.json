@@ -1,0 +1,76 @@
+{
+  "status": 200,
+  "message": "get  Data successfully",
+  "data": [
+    {
+      "StateID": 7,
+      "StateName": "Gujarat",
+      "Fleg": "Property Card",
+      "Village": "thalvada, danta, banaskantha",
+      "BaseDocumentTypeID": 1,
+      "BaseDocumentType": "Property Card"
+    },
+    {
+      "StateID": 7,
+      "StateName": "Gujarat",
+      "Fleg": "7/12",
+      "Village": "thali gangapur, kankrej, banaskantha",
+      "BaseDocumentTypeID": 2,
+      "BaseDocumentType": "7/12"
+    }
+  ],
+  "datagoa": [
+    {
+      "StateID": 6,
+      "StateName": "Goa",
+      "Fleg": "Property Card",
+      "Village": "thalvada, danta, banaskantha",
+      "BaseDocumentTypeID": 1,
+      "BaseDocumentType": "FORM D"
+    },
+    {
+      "StateID": 6,
+      "StateName": "Goa",
+      "Fleg": "7/12",
+      "Village": "thali gangapur, kankrej, banaskantha",
+      "BaseDocumentTypeID": 2,
+      "BaseDocumentType": "FORM I & XIV"
+    }
+  ],
+  "datamh": [
+    {
+      "StateID": 15,
+      "StateName": "Maharashtra",
+      "Fleg": "Property Card",
+      "Village": "thalvada, danta, banaskantha",
+      "BaseDocumentTypeID": 1,
+      "BaseDocumentType": "Property Card"
+    },
+    {
+      "StateID": 15,
+      "StateName": "Maharashtra",
+      "Fleg": "7/12",
+      "Village": "thali gangapur, kankrej, banaskantha",
+      "BaseDocumentTypeID": 2,
+      "BaseDocumentType": "7/12"
+    }
+  ],
+  "datamp": [
+    {
+      "StateID": 14,
+      "StateName": "Madhya Pradesh",
+      "Fleg": "Property Card",
+      "Village": "thalvada, danta, banaskantha",
+      "BaseDocumentTypeID": 1,
+      "BaseDocumentType": "Property Card"
+    },
+    {
+      "StateID": 14,
+      "StateName": "Madhya Pradesh",
+      "Fleg": "7/12",
+      "Village": "thali gangapur, kankrej, banaskantha",
+      "BaseDocumentTypeID": 2,
+      "BaseDocumentType": "7/12"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "message": "TitleSerch ...",
+  "status": 200,
+  "data": [
+    {
+      "Id_name": 1,
+      "Name": "Rural"
+    },
+    {
+      "Id_name": 2,
+      "Name": "Urban"
+    }
+  ]
+}

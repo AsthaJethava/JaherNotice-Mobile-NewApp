@@ -281,7 +281,7 @@ const Bppalert = ({ route, navigation }) => {
               />
             </View>
           ) : (
-            <Fragment key={index}>
+            <Fragment>
               {isHidden ? (
                 <FlatList
                   refreshControl={

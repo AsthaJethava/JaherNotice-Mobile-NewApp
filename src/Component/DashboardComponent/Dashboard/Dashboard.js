@@ -995,7 +995,7 @@ const App = ({ route, navigation }) => {
                 }
 
                 {/* IsActiveAreaAlert */}
-                <Fragment >
+                <Fragment>
                   {
                     <Fragment>
                       <Card
@@ -1254,7 +1254,7 @@ const App = ({ route, navigation }) => {
                   {/*  IsActiveTodaysJaherNotice === null || IsActiveTodaysJaherNotice === '' || (Array.isArray(IsActiveTodaysJaherNotice) && IsActiveTodaysJaherNotice.length === 0)
                    */}
                   {IsAtivenew == 0 ? null : (
-                    <Fragment >
+                    <Fragment>
                       <Card
                         style={{
                           ...styles.card,
@@ -2042,7 +2042,7 @@ const App = ({ route, navigation }) => {
                 </Fragment>
 
                 {IsAtivenewTitle == 0 ? null : (
-                  <Fragment >
+                  <Fragment>
                     <Card
                       style={{
                         ...styles.card,
@@ -2135,17 +2135,20 @@ const App = ({ route, navigation }) => {
                   backgroundColor: theme === 'LIGHT' ? '#ffffff' : '#20272b',
                   borderColor: theme === 'LIGHT' ? '#ffffff' : '#ffffff',
                   borderWidth: 1,
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   style={styles.contacRDinerr}
-                  onPress={() => navigation.navigate('LandRecord')}>
+                  onPress={() => navigation.navigate('LandRecord')}
+                >
                   <View
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
                       marginTop: 10,
                       marginBottom: 10,
-                    }}>
+                    }}
+                  >
                     <Image
                       source={LandRecords}
                       style={{
@@ -2156,7 +2159,7 @@ const App = ({ route, navigation }) => {
                         resizeMode: 'cover',
                       }}
                     />
-                    <View style={{marginLeft: 10}}>
+                    <View style={{ marginLeft: 10 }}>
                       <Text
                         style={{
                           marginLeft: 8,
@@ -2166,13 +2169,19 @@ const App = ({ route, navigation }) => {
                             theme === 'LIGHT'
                               ? 'rgb(153, 153, 153)'
                               : '#ffffff',
-                        }}>
+                        }}
+                      >
                         Land Records
                       </Text>
                     </View>
                   </View>
                   <View
-                    style={{flex: 1, alignItems: 'flex-end', paddingRight: 10}}>
+                    style={{
+                      flex: 1,
+                      alignItems: 'flex-end',
+                      paddingRight: 10,
+                    }}
+                  >
                     <FontAwesome
                       name="chevron-right"
                       size={24}
@@ -2244,7 +2253,7 @@ const App = ({ route, navigation }) => {
               {/* )}
           /> */}
               {/* ALL Services  */}
-              <LinearGradient
+              {/* <LinearGradient
                 style={styles.linearGradient}
                 colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
                 start={{ x: 0, y: 0 }}
@@ -2252,7 +2261,7 @@ const App = ({ route, navigation }) => {
                 locations={[0.18, 1, 1]}
               >
                 <Text></Text>
-              </LinearGradient>
+              </LinearGradient> */}
               <Text
                 style={{
                   ...styles.ServiceName,
@@ -2457,12 +2466,18 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   logoP: {
-    width: '20%',
-    height: '52%',
-    marginTop: '9%',
+    // width: '20%',
+    // height: '52%',
+    // marginTop: '9%',
+    // marginLeft: 10,
+    // marginRight: 14,
+    // resizeMode: 'contain',
+    width: 40,
+    height: 40,
     marginLeft: 10,
     marginRight: 14,
     resizeMode: 'contain',
+    borderRadius: 20,
   },
   cardc: {
     width: '100%',

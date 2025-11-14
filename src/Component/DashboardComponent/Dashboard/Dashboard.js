@@ -437,9 +437,11 @@ const App = ({ route, navigation }) => {
       style={{
         ...styles.container,
         backgroundColor: theme === 'LIGHT' ? '#ffffff' : '#20272b',
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       }}
     >
-      <StatusBar animated={true} backgroundColor={statusBarBackgroundColor} />
+      <StatusBar animated={true} backgroundColor={statusBarBackgroundColor}
+      barStyle={theme === 'LIGHT' ? 'dark-content' : 'light-content'} />
       <OrientationLocker
         orientation={PORTRAIT}
         onChange={orientation => console.log('onChange', orientation)}
@@ -447,43 +449,62 @@ const App = ({ route, navigation }) => {
           console.log('onDeviceChange', orientation)
         }
       />
-      <View
+      <Card
         style={{
-          ...styles.row,
+          ...styles.card,
           backgroundColor: theme === 'LIGHT' ? '#ffffff' : '#20272b',
         }}
       >
-        <View style={styles.logo}>
+        <View style={styles.Containerimg}>
           <Image
             source={theme === 'LIGHT' ? Jahernoticelog : Jahernoticelogw}
-            style={{
-              width: '28%',
-              height: 48,
-              marginLeft: 4,
-              resizeMode: 'contain',
-            }}
+            style={styles.Logo}
           />
-        </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Profile')}
-          style={styles.text}
-        >
-          <View
-            style={styles.text}
-            onPress={() => navigation.navigate('Profile')}
-          >
-            <Text
-              style={{
-                ...styles.texta,
-                color: theme === 'LIGHT' ? 'rgb(237, 28, 36)' : '#ffffff',
-              }}
-            >
-              {capitalizeFirstWord(FirstName)} {capitalizeFirstWord(LastName)}
-            </Text>
-            <Image source={Profile} style={styles.logoP} />
+          <View style={styles.iconm}>
+            <TouchableOpacity style={styles.LogoTh}>
+              {/* {isDarkMode ? (
+          <Ionicons name="md-moon" style={styles.LogoThaW} />
+        ) : (
+          <Ionicons name="md-moon" style={styles.LogoTha} />
+        )} */}
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.iconma}>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <Text
+                  style={{
+                    ...styles.iconat,
+                    color: theme === 'LIGHT' ? 'rgb(193, 39, 45)' : '#ffffff',
+                    marginRight: 10,
+                  }}
+                >
+                  {FirstName} {LastName}
+                </Text>
+                <Image
+                  source={Profile}
+                  style={{ ...styles.icona, marginRight: 10 }}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Card>
+      <LinearGradient
+        style={styles.linearGradientn}
+        colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        locations={[0.18, 1, 1]}
+      >
+        <Text></Text>
+      </LinearGradient>
       <ScrollView
         style={{ width: '100%', flex: 1 }}
         refreshControl={
@@ -2403,6 +2424,54 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  Logo: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '22%',
+    height: 37,
+    marginLeft: 11,
+    marginTop: 12,
+  },
+  Containerimg: {
+    flexDirection: 'row',
+    width: '100%',
+    height: '8%',
+  },
+  iconm: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: '6%',
+    marginTop: 30,
+    width: '30%',
+    // backgroundColor: '#FFF',
+  },
+  iconma: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 18,
+    marginLeft: -5,
+    // marginRight: 10,
+    // backgroundColor: '#FFF',
+  },
+  icona: {
+    width: 28,
+    height: 28,
+    justifyContent: 'flex-end',
+    marginTop: 25,
+  },
+  iconat: {
+    height: 28,
+    color: 'rgb(193, 39, 45)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    marginTop: 30,
+  },
+  LogoTh: {
+    width: '50%',
+    height: 40,
+    marginLeft: 8,
   },
   contacRDinerr: {
     width: '100%',

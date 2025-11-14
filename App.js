@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/Component/Login/Login.js';
+import Verifyuser from './src/Component/Login/Verifyuser';
 import Otp from './src/Component/Login/Otp.js';
 import LernmoreDashbord from './src/Component/LernmoreDashbord/LernmoreDashbord.js';
 import PropertyProtectiontext from './src/Component/LernmoreDashbord/PropertyProtectiontext.js';
@@ -177,10 +178,15 @@ function App() {
       <NavigationContainer>
         {/* <Stack.Navigator initialRouteName="Login"> */}
         <Stack.Navigator initialRouteName="Dashbord">
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Login"
             component={Login}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Verifyuser"
+            component={Verifyuser}
+            options={{ headerShown: false, headerBackTitleVisible: false }}
           />
           <Stack.Screen
             name="Otp"
@@ -204,8 +210,8 @@ function App() {
             name="LernmoreDashbord"
             component={LernmoreDashbord}
             options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
+          />
+          <Stack.Screen
             name="PropertyProtectiontext"
             component={PropertyProtectiontext}
             options={{
@@ -238,8 +244,8 @@ function App() {
               headerTintColor: 'white',
               headerBackTitleVisible: false,
             }}
-          /> */}
-          {/* <Stack.Screen
+          />
+          <Stack.Screen
             name="LandRecordstext"
             component={LandRecordstext}
             options={{
@@ -289,8 +295,8 @@ function App() {
               headerTintColor: 'white',
               headerBackTitleVisible: false,
             }}
-          /> */}
-          {/* <Stack.Screen
+          />
+          <Stack.Screen
             name="RegisterdSearchtext"
             component={RegisterdSearchtext}
             options={{
@@ -340,8 +346,8 @@ function App() {
               headerTintColor: 'white',
               headerBackTitleVisible: false,
             }}
-          /> */}
-          {/* <Stack.Screen
+          />
+          <Stack.Screen
             name="AuctionAlert"
             component={AuctionAlert}
             options={{
@@ -357,7 +363,7 @@ function App() {
               headerTintColor: 'white',
               headerBackTitleVisible: false,
             }}
-          /> */}
+          />
           <Stack.Screen
             name="Dashbord"
             component={Dashbord}

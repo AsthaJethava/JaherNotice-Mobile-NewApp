@@ -2,7 +2,7 @@
 //  * Jaher Notice React Native App
 //  **/
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -20,24 +20,13 @@ import {
 } from 'react-native';
 import { Card, Divider, Button, ActivityIndicator } from 'react-native-paper';
 import User from '../../Imeges/Profile.png';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Orientation,
   OrientationLocker,
   PORTRAIT,
-  LANDSCAPE,
 } from 'react-native-orientation-locker';
-import {
-  requestUserPermissiona,
-  notificationListenera,
-  getFcmTokena,
-} from '../../helpers/nptoficationServices';
-import { FlatList } from 'react-native';
-import TitleSearch from '../TitleSearchComponent/TitleSearch.json';
-// import {bootstrapAsync} from '../../../src/Navigation/index';
-// import NavigationService from '../../../src/helpers/NavigationService';
-// import TitleSearch from '../../TitleSearchComponent/TitleSearch.json';
+import { AuthContext } from '../../context/AuthContext'; // ⭐ ADDED
 
 const LogoutConfirmationModal = ({ visible, onCancel, onLogout }) => {
   const [theme, setTheme] = useState('');
@@ -45,19 +34,13 @@ const LogoutConfirmationModal = ({ visible, onCancel, onLogout }) => {
   useEffect(() => {
     const getColorScheme = () => {
       const colorScheme = Appearance.getColorScheme();
-
-      if (colorScheme === 'dark') {
-        setTheme('DARK');
-      } else {
-        setTheme('LIGHT');
-      }
+      setTheme(colorScheme === 'dark' ? 'DARK' : 'LIGHT');
     };
-    getColorScheme(); // Call the function immediately
+    getColorScheme();
     const listener = Appearance.addChangeListener(getColorScheme);
-    return () => {
-      listener.remove(); // Remove the change listener on component unmount
-    };
+    return () => listener.remove();
   }, []);
+
   return (
     <Modal visible={visible} transparent={true} animationType="fade">
       <View style={styles.modalContainer}>
@@ -76,6 +59,7 @@ const LogoutConfirmationModal = ({ visible, onCancel, onLogout }) => {
           >
             Logout
           </Text>
+
           <Text
             style={{
               ...styles.modalTexta,
@@ -84,10 +68,12 @@ const LogoutConfirmationModal = ({ visible, onCancel, onLogout }) => {
           >
             Are you sure you want to logout?
           </Text>
+
           <View style={styles.textd}>
             <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
+
             <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
               <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
@@ -98,77 +84,35 @@ const LogoutConfirmationModal = ({ visible, onCancel, onLogout }) => {
   );
 };
 
-const Profile = ({ route, navigation }) => {
+const Profile = ({ navigation }) => {
+  const { logout } = useContext(AuthContext); // ⭐ AUTH LOGOUT
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
+  const [UserData, setUserData] = useState();
+  const [isLoding, setisLoding] = useState(false);
+  const [theme, setTheme] = useState('');
+
   const handleLogout = () => {
     tableData();
     setLogoutModalVisible(false);
   };
+
   const handleCancel = () => {
     setLogoutModalVisible(false);
   };
 
-  const [UserID, setUserId] = useState();
-  const [Token, setToken] = useState();
-  const [DiviceID, setDiviceID] = useState();
-  const [MobileNo, setMobileNo] = useState();
-  const [UserData, setUserData] = useState();
-  const [isLoding, setisLoding] = useState(false);
-
-  // Log GET Data AsyncStorage
+  // THE REAL LOGOUT LOGIC (FIXED)
   const LogoutUser = async () => {
-    let UserID = await AsyncStorage.removeItem('UserID');
-    let Token = await AsyncStorage.removeItem('Token');
-    let DiviceID = await AsyncStorage.removeItem('DeviceID');
-    let MobileNo = await AsyncStorage.removeItem('MobileNo');
-    setUserId(UserID);
-    setToken(Token);
-    setDiviceID(DiviceID);
-    setMobileNo(MobileNo);
-    if (UserID == null) {
-      if (Token == null) {
-        if (DiviceID == null) {
-          if (MobileNo == null) {
-            navigation.navigate('Login');
-          }
-        }
-      }
-    }
+    await logout(); // ⭐ FIX → NOW NAVIGATION WORKS
   };
 
-  // Delet Acount API
-  const clearAsyncStorage = async () => {
-    try {
-      await AsyncStorage.clear();
-      console.log('AsyncStorage data cleared successfully.');
-    } catch (error) {
-      console.log('Error clearing AsyncStorage data:', error);
-    }
-  };
-  const resetState = () => {
-    setData(null);
-    setLoggedIn(false);
-    // Reset other state variables to their initial values or null
-  };
-
-  // useEffect(() => {
-  //   bootstrapAsync().then(({isUserActive}) => {
-  //     if (isUserActive) {
-  //       NavigationService.navigate('Profile');
-  //     } else {
-  //       NavigationService.navigate('Login');
-  //     }
-  //   });
-  // });
   const tableData = () => {
     (async () => {
       let Userid = await AsyncStorage.getItem('UserID');
 
       const myHeaders = new Headers();
       myHeaders.append('Content-Type', 'application/json');
-      const raw = JSON.stringify({
-        UserID: Userid,
-      });
+
+      const raw = JSON.stringify({ UserID: Userid });
 
       const requestOptions = {
         method: 'POST',
@@ -181,26 +125,12 @@ const Profile = ({ route, navigation }) => {
         .then(response => response.json())
         .then(data => {
           if (data.status == 200) {
-            LogoutUser();
-            clearAsyncStorage(); // Clear AsyncStorage data
-            resetState(); // Reset application state
-            AsyncStorage.removeItem('UserID');
-            AsyncStorage.removeItem('Token');
-            AsyncStorage.removeItem('DeviceID');
-            AsyncStorage.removeItem('MobileNo');
-            AsyncStorage.clear();
-            // navigation.navigate('Login');
-            NavigationService.replace('Login');
-            // console.log();
-            setModalVisible(!modalVisible);
-            setModalVisible(false);
+            LogoutUser(); // ⭐ THIS TRIGGERS AUTH CHANGE
           }
         })
         .catch(error => console.log('error', error));
     })();
   };
-
-  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     UserDetails();
@@ -208,71 +138,45 @@ const Profile = ({ route, navigation }) => {
 
   const UserDetails = () => {
     (async () => {
-      let Tokena = await AsyncStorage.getItem('fcmToken');
-      console.warn('Token', Tokena);
       setisLoding(true);
       let Userid = await AsyncStorage.getItem('UserID');
-      // console.log(Userid);
-      let DiviceID = await AsyncStorage.getItem('DeviceID');
-      // console.log(DiviceID);
+
       fetch(`https://qaapi.jahernotice.com/api/UserDetails/${Userid}`)
-        .then(function (response) {
-          responseClone = response.clone();
-          return response.json();
-        })
-        .then(function (rejectionReason) {
+        .then(response => response.json())
+        .then(rejectionReason => {
           setUserData(rejectionReason.data);
           setisLoding(false);
-          setModalVisible(false);
         })
         .catch(error => console.error(error));
     })();
   };
 
-  // Ignore log notification by message
-  LogBox.ignoreLogs(['Warning: ...']);
-
-  //Ignore all log notifications
+  // Ignore warnings
   LogBox.ignoreAllLogs();
-  console.disableYellowBox = true;
-
-  const [theme, setTheme] = useState('');
 
   useEffect(() => {
     const getColorScheme = () => {
       const colorScheme = Appearance.getColorScheme();
-
-      if (colorScheme === 'dark') {
-        setTheme('DARK');
-      } else {
-        setTheme('LIGHT');
-      }
+      setTheme(colorScheme === 'dark' ? 'DARK' : 'LIGHT');
     };
-    getColorScheme(); // Call the function immediately
+    getColorScheme();
     const listener = Appearance.addChangeListener(getColorScheme);
-    return () => {
-      listener.remove(); // Remove the change listener on component unmount
-    };
+    return () => listener.remove();
   }, []);
 
-  const statusBarBackgroundColor = theme === 'LIGHT' ? '#b83725' : '#343a40';
+  const statusBarBackgroundColor =
+    theme === 'LIGHT' ? '#b83725' : '#343a40';
 
   function capitalizeFirstWord(str) {
-    if (typeof str !== 'string') {
-      return str;
-    }
+    if (typeof str !== 'string') return str;
     const words = str.trim().split(' ');
-    if (words.length === 0) {
-      return str;
-    }
-    const capitalizedWords = words.map(word => {
-      if (word.length === 0) {
-        return word;
-      }
-      const capitalized = word.charAt(0).toUpperCase() + word.slice(1);
-      return capitalized;
-    });
-    return capitalizedWords.join(' ');
+    return words
+      .map(word =>
+        word.length > 0
+          ? word.charAt(0).toUpperCase() + word.slice(1)
+          : word
+      )
+      .join(' ');
   }
 
   return (
@@ -284,13 +188,9 @@ const Profile = ({ route, navigation }) => {
         }}
       >
         <StatusBar animated={true} backgroundColor={statusBarBackgroundColor} />
-        <OrientationLocker
-          orientation={PORTRAIT}
-          onChange={orientation => console.log('onChange', orientation)}
-          onDeviceChange={orientation =>
-            console.log('onDeviceChange', orientation)
-          }
-        />
+
+        <OrientationLocker orientation={PORTRAIT} />
+
         <SafeAreaView>
           <ScrollView>
             {isLoding ? (
@@ -307,139 +207,133 @@ const Profile = ({ route, navigation }) => {
                 />
               </View>
             ) : (
-              <FlatList
-                data={UserData}
-                renderItem={({ item }) => (
-                  <>
+              <ScrollView>
+                {UserData?.map(item => (
+                  <View key={item.UserID}>
                     <View style={styles.icona}>
                       <Image style={styles.iconuser} source={User} />
                     </View>
-                    <View>
-                      <Card
-                        style={{
-                          ...styles.card,
-                          backgroundColor:
-                            theme === 'LIGHT' ? '#ffffff' : '#343a40',
-                        }}
-                      >
-                        <View style={styles.textcontent}>
-                          <View>
-                            <Text
-                              style={{
-                                ...styles.texta,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              First Name
-                            </Text>
-                            <Text
-                              style={{
-                                ...styles.text,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              {capitalizeFirstWord(item.FirstName)}
-                            </Text>
-                          </View>
-                          <Divider style={styles.Divider} />
-                          <View style={styles.spesh}>
-                            <Text
-                              style={{
-                                ...styles.texta,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              Last Name
-                            </Text>
-                            <Text
-                              style={{
-                                ...styles.text,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              {capitalizeFirstWord(item.LastName)}
-                            </Text>
-                          </View>
-                          <Divider style={styles.Divider} />
-                          <View style={styles.spesh}>
-                            <Text
-                              style={{
-                                ...styles.texta,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              Email Address
-                            </Text>
-                            <Text
-                              style={{
-                                ...styles.text,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              {item.EmailID}
-                            </Text>
-                          </View>
-                          <Divider style={styles.Divider} />
-                          <View style={styles.spesh}>
-                            <Text
-                              style={{
-                                ...styles.texta,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              Mobile Number
-                            </Text>
-                            <Text
-                              style={{
-                                ...styles.text,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              {item.MobileNo}
-                            </Text>
-                          </View>
-                          <Divider style={styles.Divider} />
-                          <View style={styles.spesh}>
-                            <Text
-                              style={{
-                                ...styles.texta,
-                                color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                              }}
-                            >
-                              Address
-                            </Text>
 
-                            {item.Address1 !== '' && item.Address1 !== null ? (
-                              <>
-                                <Text
-                                  style={{
-                                    ...styles.text,
-                                    color:
-                                      theme === 'LIGHT' ? '#000' : '#ffffff',
-                                  }}
-                                >
-                                  {capitalizeFirstWord(item.Address1)}
-                                </Text>
-                              </>
-                            ) : null}
-
-                            {item.Address2 !== '' && item.Address2 !== null ? (
-                              <>
-                                <Text
-                                  style={{
-                                    ...styles.text,
-                                    color:
-                                      theme === 'LIGHT' ? '#000' : '#ffffff',
-                                  }}
-                                >
-                                  {capitalizeFirstWord(item.Address2)}
-                                </Text>
-                              </>
-                            ) : null}
-                          </View>
+                    <Card
+                      style={{
+                        ...styles.card,
+                        backgroundColor:
+                          theme === 'LIGHT' ? '#ffffff' : '#343a40',
+                      }}
+                    >
+                      <View style={styles.textcontent}>
+                        <View>
+                          <Text
+                            style={{
+                              ...styles.texta,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            First Name
+                          </Text>
+                          <Text
+                            style={{
+                              ...styles.text,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            {capitalizeFirstWord(item.FirstName)}
+                          </Text>
                         </View>
-                      </Card>
-                    </View>
+                        <Divider style={styles.Divider} />
+                        <View style={styles.spesh}>
+                          <Text
+                            style={{
+                              ...styles.texta,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            Last Name
+                          </Text>
+                          <Text
+                            style={{
+                              ...styles.text,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            {capitalizeFirstWord(item.LastName)}
+                          </Text>
+                        </View>
+                        <Divider style={styles.Divider} />
+                        <View style={styles.spesh}>
+                          <Text
+                            style={{
+                              ...styles.texta,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            Email Address
+                          </Text>
+                          <Text
+                            style={{
+                              ...styles.text,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            {item.EmailID}
+                          </Text>
+                        </View>
+                        <Divider style={styles.Divider} />
+                        <View style={styles.spesh}>
+                          <Text
+                            style={{
+                              ...styles.texta,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            Mobile Number
+                          </Text>
+                          <Text
+                            style={{
+                              ...styles.text,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            {item.MobileNo}
+                          </Text>
+                        </View>
+                        <Divider style={styles.Divider} />
+                        <View style={styles.spesh}>
+                          <Text
+                            style={{
+                              ...styles.texta,
+                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
+                            }}
+                          >
+                            Address
+                          </Text>
+
+                          {item.Address1 !== '' && item.Address1 !== null ? (
+                            <Text
+                              style={{
+                                ...styles.text,
+                                color:
+                                  theme === 'LIGHT' ? '#000' : '#ffffff',
+                              }}
+                            >
+                              {capitalizeFirstWord(item.Address1)}
+                            </Text>
+                          ) : null}
+
+                          {item.Address2 !== '' && item.Address2 !== null ? (
+                            <Text
+                              style={{
+                                ...styles.text,
+                                color:
+                                  theme === 'LIGHT' ? '#000' : '#ffffff',
+                              }}
+                            >
+                              {capitalizeFirstWord(item.Address2)}
+                            </Text>
+                          ) : null}
+                        </View>
+                      </View>
+                    </Card>
                     <Card
                       style={{
                         ...styles.carda,
@@ -467,78 +361,9 @@ const Profile = ({ route, navigation }) => {
                       onCancel={handleCancel}
                       onLogout={handleLogout}
                     />
-
-                    {/* <View
-                      style={{
-                        ...styles.centeredView,
-                        backgroundColor:
-                          theme === 'LIGHT' ? '#ffffff' : '#343a40',
-                      }}>
-                      <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => {
-                          // Alert.alert('Modal has been closed.');
-                          setModalVisible(!modalVisible);
-                        }}>
-                        <View
-                          style={{
-                            ...styles.modalView,
-                            backgroundColor:
-                              theme === 'LIGHT' ? '#ffffff' : '#343a40',
-                          }}>
-                          <Text
-                            style={{
-                              ...styles.modalText,
-                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                            }}>
-                            Logout
-                          </Text>
-                          <Text
-                            style={{
-                              ...styles.modalText,
-                              color: theme === 'LIGHT' ? '#000' : '#ffffff',
-                            }}>
-                            Would you like to logout
-                          </Text>
-                          <View
-                            style={{
-                              ...styles.textd,
-                              backgroundColor:
-                                theme === 'LIGHT' ? '#ffffff' : '#343a40',
-                            }}>
-                            <Pressable
-                              style={[styles.button, styles.buttonClose]}
-                              onPress={() => setModalVisible(!modalVisible)}>
-                              <Text
-                                style={{
-                                  ...styles.textStyle,
-                                  // backgroundColor:
-                                  //   theme === 'LIGHT' ? '#ffffff' : '#343a40',
-                                }}>
-                                Cancel
-                              </Text>
-                            </Pressable>
-                            <Pressable
-                              style={[styles.button, styles.buttonClose]}
-                              onPress={() => tableData()}>
-                              <Text
-                                style={{
-                                  ...styles.textStyle,
-                                  // backgroundColor:
-                                  //   theme === 'LIGHT' ? '#ffffff' : '#343a40',
-                                }}>
-                                Logout
-                              </Text>
-                            </Pressable>
-                          </View>
-                        </View>
-                      </Modal>
-                    </View> */}
-                  </>
-                )}
-              />
+                  </View>
+                ))}
+              </ScrollView>
             )}
           </ScrollView>
         </SafeAreaView>
@@ -596,7 +421,10 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-
+  iconuser: {
+    width: 100,
+    height: 100,
+  },
   card: {
     width: '90%',
     justifyContent: 'center',
@@ -641,44 +469,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 16,
     marginRight: 20,
-  },
-
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    justifyContent: 'center',
-    marginTop: '70%',
-  },
-  button: {
-    padding: 10,
-    marginLeft: 20,
-  },
-  buttonOpen: {
-    backgroundColor: '#FFFFFF',
-  },
-  buttonClose: {
-    backgroundColor: '#FFFFFF',
-  },
-  textStyle: {
-    color: 'red',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    marginRight: 'auto',
-    fontSize: 16,
   },
   textd: {
     flexDirection: 'row',

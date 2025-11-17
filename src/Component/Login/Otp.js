@@ -2,7 +2,7 @@
  * Jaher Notice React Native App (migrated for RN 0.76 + React 18)
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import { Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { OrientationLocker, PORTRAIT } from 'react-native-orientation-locker';
+import { AuthContext } from '../../context/AuthContext';   // ⭐ Added
 
 // -------- Helper Functions --------
 const formatTimerValue = timer => {
@@ -50,6 +51,7 @@ const useVisibilityChange = callback => {
 
 // -------- OTP Component --------
 const Otp = ({ route, navigation }) => {
+  const { login } = useContext(AuthContext);
   const [theme, setTheme] = useState('');
   const [Otp, setOtp] = useState('');
   const [Token, setToken] = useState('');
@@ -106,14 +108,14 @@ const Otp = ({ route, navigation }) => {
       },
     })
       .then(response => response.json())
-      .then(data => {
+      .then(async data => {
         setButtonL(false);
         if (data.status == 200) {
           AsyncStorage.setItem('UserID', data.data[0].UserID);
           AsyncStorage.setItem('UserIDold', data.data[0].UserID);
           AsyncStorage.setItem('FirstName', data.data[0].FirstName);
           AsyncStorage.setItem('LastName', data.data[0].LastName);
-          navigation.navigate('Dashbord');
+          login(data.data[0].UserID);
           return Toast.show({
             type: 'success',
             text1: `OTP Verification Successfully`,
@@ -238,7 +240,6 @@ const Otp = ({ route, navigation }) => {
 
   const statusBarBackgroundColor = theme === 'LIGHT' ? '#b83725' : '#343a40';
 
-  // -------- UI --------
   return (
     <View
       style={{
@@ -291,7 +292,6 @@ const Otp = ({ route, navigation }) => {
           onPress={() => {
             onSubmit();
             setIsTimerActive(true);
-          // navigation.navigate('Dashbord');
           }}
           disabled={!Otp || Otp.length !== 6}
           mode="contained">

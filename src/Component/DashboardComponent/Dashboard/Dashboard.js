@@ -1129,13 +1129,7 @@ const App = ({ route, navigation }) => {
                                           ) : (
                                             <View style={styles.surfacean}>
                                               <Text
-                                                style={{
-                                                  ...styles.textnn,
-                                                  color:
-                                                    theme === 'LIGHT'
-                                                      ? '#808080'
-                                                      : '#ffffff',
-                                                }}
+                                                style={styles.textn}
                                               >
                                                 {item.todayCounts}
                                               </Text>
@@ -1654,13 +1648,7 @@ const App = ({ route, navigation }) => {
                                         ) : (
                                           <View style={styles.surfacean}>
                                             <Text
-                                              style={{
-                                                ...styles.textnn,
-                                                color:
-                                                  theme === 'LIGHT'
-                                                    ? '#808080'
-                                                    : '#ffffff',
-                                              }}
+                                          style={styles.textn}
                                             >
                                               {item.TodayCount}
                                             </Text>
@@ -1702,13 +1690,14 @@ const App = ({ route, navigation }) => {
                                         ) : (
                                           <View style={styles.surfacean}>
                                             <Text
-                                              style={{
-                                                ...styles.textnn,
-                                                color:
-                                                  theme === 'LIGHT'
-                                                    ? '#808080'
-                                                    : '#ffffff',
-                                              }}
+                                              // style={{
+                                              //   ...styles.textnn,
+                                              //   color:
+                                              //     theme === 'LIGHT'
+                                              //       ? '#808080'
+                                              //       : '#ffffff',
+                                              // }}
+                                              style={styles.textn}
                                             >
                                               {item._7DayCount}
                                             </Text>
@@ -1917,13 +1906,7 @@ const App = ({ route, navigation }) => {
                                           ) : (
                                             <View style={styles.surfacean}>
                                               <Text
-                                                style={{
-                                                  ...styles.textnn,
-                                                  color:
-                                                    theme === 'LIGHT'
-                                                      ? '#808080'
-                                                      : '#ffffff',
-                                                }}
+                                             style={styles.textn}
                                               >
                                                 {item.TodayCount}
                                               </Text>
@@ -1965,13 +1948,7 @@ const App = ({ route, navigation }) => {
                                           ) : (
                                             <View style={styles.surfacean}>
                                               <Text
-                                                style={{
-                                                  ...styles.textnn,
-                                                  color:
-                                                    theme === 'LIGHT'
-                                                      ? '#808080'
-                                                      : '#ffffff',
-                                                }}
+                                               style={styles.textn}
                                               >
                                                 {item._7DayCount}
                                               </Text>

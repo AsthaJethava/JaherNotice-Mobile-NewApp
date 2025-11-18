@@ -61,6 +61,7 @@ const AuthorizedUser = () => {
 
   // #484c54
   const [theme, setTheme] = useState('');
+  const [img, setImg] = useState();
 
   useEffect(() => {
     const getColorScheme = () => {
@@ -77,6 +78,56 @@ const AuthorizedUser = () => {
       listener.remove(); // Remove the change listener on component unmount
     };
   }, []);
+  
+  const sharePDF = async () => {
+    const pdfUrl = img; // Replace with your PDF file URL
+    console.log('PDF==URL', pdfUrl);
+    try {
+      const response = await RNFetchBlob.fetch('GET', pdfUrl);
+      const status = response.info().status;
+
+      if (status === 200) {
+        const base64Str = response.base64();
+        const options = {
+          title: 'Share PDF',
+          url: `data:application/pdf;base64,${base64Str}`,
+        };
+
+        try {
+          await Share.open(options);
+        } catch (error) {
+          console.error('Error sharing PDF:', error.message);
+        }
+      } else {
+        // Handle other status codes
+        console.error('Failed to fetch PDF. Status code:', status);
+      }
+    } catch (error) {
+      console.error('Error fetching PDF:', error.message);
+    }
+  };
+  const downloadFileNot = () => {
+    Toast.show({
+      type: 'error',
+      text1: `Sorry, the file could not be downloaded.`,
+      position: 'top',
+      visibilityTime: 4000,
+      autoHide: true,
+      topOffset: 30,
+      bottomOffset: 50,
+    });
+  };
+  const downloadFileNotS = () => {
+    Toast.show({
+      type: 'error',
+      text1: `Sorry, the file could not be Share.`,
+      position: 'top',
+      visibilityTime: 4000,
+      autoHide: true,
+      topOffset: 30,
+      bottomOffset: 50,
+    });
+  };
 
   const myCustomShare = async () => {
     const ImageURL = img;
@@ -119,6 +170,9 @@ const AuthorizedUser = () => {
     });
     return capitalizedWords.join(' ');
   }
+  const getFileExtension = fileUrl => {
+    return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
+  };
   const downloadFile = async () => {
     const fileUrl = img;
     try {
@@ -160,7 +214,7 @@ const AuthorizedUser = () => {
 
   return (
     <>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator>
         <Stack.Screen
           name="Dashbord"
           component={Dashbord}

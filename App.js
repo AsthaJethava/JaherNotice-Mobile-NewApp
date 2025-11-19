@@ -10,14 +10,18 @@ import Toast from 'react-native-toast-message';
 import './src/firebaseConfig';
 import { LogBox } from 'react-native';
 import { AuthProvider } from './src/context/AuthContext';
-import {requestUserPermission, getFcmToken, notificationListener} from './src/firebaseConfig';
+import {
+  requestUserPermission,
+  getFcmToken,
+  notificationListener,
+} from './src/firebaseConfig';
 
 function App() {
-//   useEffect(() => {
-//   requestUserPermission();
-//   getFcmToken();
-//   notificationListener();
-// }, []);
+  useEffect(() => {
+    requestUserPermission();
+    getFcmToken();
+    notificationListener();
+  }, []);
 
   // Ignore log notification by message
   LogBox.ignoreLogs(['Warning: ...']);

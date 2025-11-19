@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "743355403215",
+    "project_id": "jahernotice-1a7c0",
+    "storage_bucket": "jahernotice-1a7c0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743355403215:android:3fb8a96fc598715a3860ba",
+        "android_client_info": {
+          "package_name": "com.esmsys.jahernotice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPprmfchcocF2df_CIN1ZGrNnokg3kdsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-package com.jahernoticenewapp
+package com.esmsys.jahernotice
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

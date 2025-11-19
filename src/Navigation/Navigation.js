@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AuthorizedUser from '../AuthorizedUser/AuthorizedUser';
 import UnAuthorizedUser from '../UnAuthorizedUser/UnAuthorizedUser';
-
+import NavigationService from './NavigationService';
 import { AuthContext } from '../context/AuthContext';
 
 const Navigation = () => {
@@ -48,7 +48,7 @@ const Navigation = () => {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={NavigationService.navigationRef}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isLoggedIn ? (
           // USER IS LOGGED IN → SHOW AUTHORIZED STACK

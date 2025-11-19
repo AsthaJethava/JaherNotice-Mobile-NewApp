@@ -15,6 +15,7 @@ import RegisterdSearchtext from '../Component/LernmoreDashbord/RegisterdSearchte
 import AajniJNtext from '../Component/LernmoreDashbord/AajniJNtext.js';
 import TpAlerts from '../Component/LernmoreDashbord/TpAlerts.js';
 import AuctionAlert from '../Component/LernmoreDashbord/AuctionAlert.js';
+import NotificationImage from '../Component/PushNotificationImage/Image';
 import { Appearance, View } from 'react-native';
 
 const UnAuthorizedUser = () => {
@@ -232,6 +233,33 @@ const UnAuthorizedUser = () => {
             headerTintColor: 'white',
             headerBackTitleVisible: false,
           }}
+        />
+        <Stack.Screen
+          name="NotificationImage"
+          component={NotificationImage}
+          options={({ route, navigation }) => ({
+            headerTitle: 'VIEWING NOTICE',
+            headerRight: () => (
+              <TouchableOpacity onPress={() => navigation.navigate('Dashbord')}>
+                <View>
+                  <Entypo
+                    name={'home'}
+                    style={{ fontSize: 25, marginRight: 20, color: '#FFF' }}
+                  />
+                </View>
+              </TouchableOpacity>
+            ),
+            headerStyle: {
+              backgroundColor: theme === 'LIGHT' ? '#b83725' : '#343a40',
+              color: '#FFF', //Set Header color
+            },
+            headerTitleStyle: {
+              color: 'white',
+              fontWeight: 'bold',
+            },
+            headerTintColor: 'white',
+            headerBackTitleVisible: false,
+          })}
         />
       </Stack.Navigator>
       <Toast />

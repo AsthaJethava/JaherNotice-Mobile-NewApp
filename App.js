@@ -15,8 +15,13 @@ import {
   getFcmToken,
   notificationListener,
 } from './src/firebaseConfig';
+import RNBootSplash from 'react-native-bootsplash';
 
 function App() {
+  useEffect(() => {
+    RNBootSplash.hide({ fade: true });
+  }, []);
+
   useEffect(() => {
     requestUserPermission();
     getFcmToken();

@@ -69,9 +69,7 @@ const Login = ({ navigation }) => {
 
   const onSubmit = async () => {
     setButtonL(true);
-    // let Tokena = await AsyncStorage.getItem('fcmToken');
-    // let Tokena = 'dummy_fcm_token_12345';
-    let Tokena = 'c3fPXd7NNUP4kMsqBbqDMK:APA91bFEsh_iLCC8lb_MyQOE8YoC9TaTerpavml-oOBFqFVlq_V_Z3M7DsENtWGn9n7IXe5_G4NxxeUspTlFdFyoj7V5V2CZ-okpK8M1eL0pRcKxT3_lQR8';
+    let Tokena = await AsyncStorage.getItem('fcmToken');
 
     if (!Tokena) {
       try {
@@ -131,40 +129,40 @@ const Login = ({ navigation }) => {
           AsyncStorage.setItem('MobileNo', String(Mobile));
 
           // if (Mobile === '9712896080') {
-            // Toast.show({
-            //   type: 'success',
-            //   text1: `'Verification Successfully'`,
-            //   position: 'bottom',
-            //   visibilityTime: 4000,
-            //   autoHide: true,
-            //   bottomOffset: 50,
-            // });
+          // Toast.show({
+          //   type: 'success',
+          //   text1: `'Verification Successfully'`,
+          //   position: 'bottom',
+          //   visibilityTime: 4000,
+          //   autoHide: true,
+          //   bottomOffset: 50,
+          // });
 
-            // AsyncStorage.setItem('UserID', '521240');
-            // AsyncStorage.setItem('FirstName', 'Jay');
-            // AsyncStorage.setItem('LastName', 'Patel');
-            // AsyncStorage.setItem('UserIDa', '521240');
+          // AsyncStorage.setItem('UserID', '521240');
+          // AsyncStorage.setItem('FirstName', 'Jay');
+          // AsyncStorage.setItem('LastName', 'Patel');
+          // AsyncStorage.setItem('UserIDa', '521240');
 
-            // setTimeout(() => {
-            //   navigation.navigate('Dashbord');
-            // }, 500);
+          // setTimeout(() => {
+          //   navigation.navigate('Dashbord');
+          // }, 500);
           // } else {
-            Toast.show({
-              type: 'success',
-              text1: `${data.message} ${Mobile}`,
-              position: 'bottom',
-              visibilityTime: 4000,
-              autoHide: true,
-              bottomOffset: 50,
-            });
-            navigation.navigate('Otp', {
-              mobileno: Mobile,
-              Userid: data.data.UserID,
-              OTPLogid: data.data.OTPLogID,
-              Diveid: Device,
-              Tokwne: Tokena,
-            });
-          }
+          Toast.show({
+            type: 'success',
+            text1: `${data.message} ${Mobile}`,
+            position: 'bottom',
+            visibilityTime: 4000,
+            autoHide: true,
+            bottomOffset: 50,
+          });
+          navigation.navigate('Otp', {
+            mobileno: Mobile,
+            Userid: data.data.UserID,
+            OTPLogid: data.data.OTPLogID,
+            Diveid: Device,
+            Tokwne: Tokena,
+          });
+        }
         // }
 
         if (data.status === 401 || data.status.message === '401 UNAUTHORIZED') {

@@ -97,7 +97,7 @@ const App = ({ route, navigation }) => {
         );
         let data = await response.json();
         const status = data.data;
-        if (status.Username == MobileNo && status.Status === 'Active      ') {
+        if (status.Username == MobileNo && status.Status.trim() === 'Active') {
           setName(status.Username);
         } else {
           await AsyncStorage.removeItem('UserID');
@@ -440,8 +440,11 @@ const App = ({ route, navigation }) => {
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       }}
     >
-      <StatusBar animated={true} backgroundColor={statusBarBackgroundColor}
-      barStyle={theme === 'LIGHT' ? 'dark-content' : 'light-content'} />
+      <StatusBar
+        animated={true}
+        backgroundColor={statusBarBackgroundColor}
+        barStyle={theme === 'LIGHT' ? 'dark-content' : 'light-content'}
+      />
       <OrientationLocker
         orientation={PORTRAIT}
         onChange={orientation => console.log('onChange', orientation)}
@@ -781,226 +784,230 @@ const App = ({ route, navigation }) => {
                       {/* IsActiveEssential */}
                       {/* IsActiveEssential === null || IsActiveEssential === '' || (Array.isArray(IsActiveEssential) && IsActiveEssential.length === 0)
         ) */}
-                      {isLoadingaep ? (
-                        <View style={styles.ActivityIndicator}>
-                          <ActivityIndicator
-                            size="large"
-                            color={theme === 'LIGHT' ? '#b83725' : '#FFF'}
-                          />
-                        </View>
-                      ) : (
-                        <Fragment>
-                          {
-                            <FlatList
-                              data={EppStatementd}
-                              renderItem={({ item }) => (
-                                <Fragment>
-                                  <View style={styles.rowcarda}>
-                                    <View
-                                      style={{
-                                        ...styles.rowcard,
-                                        ...styles.border,
-                                      }}
-                                    >
-                                      <View style={styles.column}>
-                                        <TouchableOpacity
-                                          onPress={() =>
-                                            navigation.navigate(
-                                              'EPPStatementCount',
-                                            )
-                                          }
+                      {EppStatementd && (
+                        <>
+                          {isLoadingaep ? (
+                            <View style={styles.ActivityIndicator}>
+                              <ActivityIndicator
+                                size="large"
+                                color={theme === 'LIGHT' ? '#b83725' : '#FFF'}
+                              />
+                            </View>
+                          ) : (
+                            <Fragment>
+                              {
+                                <FlatList
+                                  data={EppStatementd}
+                                  renderItem={({ item }) => (
+                                    <Fragment>
+                                      <View style={styles.rowcarda}>
+                                        <View
+                                          style={{
+                                            ...styles.rowcard,
+                                            ...styles.border,
+                                          }}
                                         >
-                                          {item.EPP_Counts > 0 ? (
-                                            <Surface style={styles.surface}>
-                                              <Text style={styles.textn}>
-                                                {item.EPP_Counts} GPP
-                                              </Text>
-                                            </Surface>
-                                          ) : (
-                                            <View style={styles.surfacen}>
+                                          <View style={styles.column}>
+                                            <TouchableOpacity
+                                              onPress={() =>
+                                                navigation.navigate(
+                                                  'EPPStatementCount',
+                                                )
+                                              }
+                                            >
+                                              {item.EPP_Counts > 0 ? (
+                                                <Surface style={styles.surface}>
+                                                  <Text style={styles.textn}>
+                                                    {item.EPP_Counts} GPP
+                                                  </Text>
+                                                </Surface>
+                                              ) : (
+                                                <View style={styles.surfacen}>
+                                                  <Text
+                                                    style={{
+                                                      ...styles.textnn,
+                                                      color:
+                                                        theme === 'LIGHT'
+                                                          ? '#808080'
+                                                          : '#ffffff',
+                                                    }}
+                                                  >
+                                                    {item.EPP_Counts} GPP
+                                                  </Text>
+                                                </View>
+                                              )}
+                                            </TouchableOpacity>
+                                            <View>
                                               <Text
                                                 style={{
-                                                  ...styles.textnn,
+                                                  ...styles.Property,
                                                   color:
                                                     theme === 'LIGHT'
-                                                      ? '#808080'
+                                                      ? 'rgb(153, 153, 153)'
                                                       : '#ffffff',
                                                 }}
                                               >
-                                                {item.EPP_Counts} GPP
+                                                My Properties
                                               </Text>
                                             </View>
-                                          )}
-                                        </TouchableOpacity>
-                                        <View>
-                                          <Text
-                                            style={{
-                                              ...styles.Property,
-                                              color:
-                                                theme === 'LIGHT'
-                                                  ? 'rgb(153, 153, 153)'
-                                                  : '#ffffff',
-                                            }}
-                                          >
-                                            My Properties
-                                          </Text>
-                                        </View>
-                                      </View>
-                                      <View style={styles.column}>
-                                        <TouchableOpacity
-                                          onPress={() =>
-                                            navigation.navigate(
-                                              'EPPStatement',
-                                              {
-                                                selectedDat: 1,
-                                              },
-                                            )
-                                          }
-                                        >
-                                          {item.todayCount > 0 ? (
-                                            <Surface style={styles.surface}>
+                                          </View>
+                                          <View style={styles.column}>
+                                            <TouchableOpacity
+                                              onPress={() =>
+                                                navigation.navigate(
+                                                  'EPPStatement',
+                                                  {
+                                                    selectedDat: 1,
+                                                  },
+                                                )
+                                              }
+                                            >
                                               {item.todayCount > 0 ? (
-                                                <Badge
-                                                  style={styles.circle}
-                                                ></Badge>
-                                              ) : null}
-                                              <Text style={styles.textn}>
-                                                {item.todayCount}
-                                              </Text>
-                                            </Surface>
-                                          ) : (
-                                            <View style={styles.surfacen}>
+                                                <Surface style={styles.surface}>
+                                                  {item.todayCount > 0 ? (
+                                                    <Badge
+                                                      style={styles.circle}
+                                                    ></Badge>
+                                                  ) : null}
+                                                  <Text style={styles.textn}>
+                                                    {item.todayCount}
+                                                  </Text>
+                                                </Surface>
+                                              ) : (
+                                                <View style={styles.surfacen}>
+                                                  <Text
+                                                    style={{
+                                                      ...styles.textnn,
+                                                      color:
+                                                        theme === 'LIGHT'
+                                                          ? '#808080'
+                                                          : '#ffffff',
+                                                    }}
+                                                  >
+                                                    {item.todayCount}
+                                                  </Text>
+                                                </View>
+                                              )}
+                                            </TouchableOpacity>
+                                            <View>
                                               <Text
                                                 style={{
-                                                  ...styles.textnn,
+                                                  ...styles.Propertyt,
                                                   color:
                                                     theme === 'LIGHT'
-                                                      ? '#808080'
+                                                      ? 'rgb(237, 28, 36)'
+                                                      : 'rgb(237, 28, 36)',
+                                                }}
+                                              >
+                                                Today’s Alert
+                                              </Text>
+                                            </View>
+                                          </View>
+                                          <View style={styles.column}>
+                                            <TouchableOpacity
+                                              onPress={() =>
+                                                navigation.navigate(
+                                                  'EPPStatement',
+                                                  {
+                                                    selectedDat: 7,
+                                                  },
+                                                )
+                                              }
+                                            >
+                                              {item._7DayCount > 0 ? (
+                                                <Surface style={styles.surface}>
+                                                  <Text style={styles.textn}>
+                                                    {item._7DayCount}
+                                                  </Text>
+                                                </Surface>
+                                              ) : (
+                                                <View style={styles.surfacen}>
+                                                  <Text
+                                                    style={{
+                                                      ...styles.textnn,
+                                                      color:
+                                                        theme === 'LIGHT'
+                                                          ? '#808080'
+                                                          : '#ffffff',
+                                                    }}
+                                                  >
+                                                    {item._7DayCount}
+                                                  </Text>
+                                                </View>
+                                              )}
+                                            </TouchableOpacity>
+                                            <View>
+                                              <Text
+                                                style={{
+                                                  ...styles.Property,
+                                                  color:
+                                                    theme === 'LIGHT'
+                                                      ? 'rgb(153, 153, 153)'
                                                       : '#ffffff',
                                                 }}
                                               >
-                                                {item.todayCount}
+                                                Last 7 Days
                                               </Text>
                                             </View>
-                                          )}
-                                        </TouchableOpacity>
-                                        <View>
-                                          <Text
-                                            style={{
-                                              ...styles.Propertyt,
-                                              color:
-                                                theme === 'LIGHT'
-                                                  ? 'rgb(237, 28, 36)'
-                                                  : 'rgb(237, 28, 36)',
-                                            }}
-                                          >
-                                            Today’s Alert
-                                          </Text>
+                                          </View>
                                         </View>
-                                      </View>
-                                      <View style={styles.column}>
-                                        <TouchableOpacity
-                                          onPress={() =>
-                                            navigation.navigate(
-                                              'EPPStatement',
-                                              {
-                                                selectedDat: 7,
-                                              },
-                                            )
-                                          }
-                                        >
-                                          {item._7DayCount > 0 ? (
-                                            <Surface style={styles.surface}>
-                                              <Text style={styles.textn}>
-                                                {item._7DayCount}
-                                              </Text>
-                                            </Surface>
-                                          ) : (
-                                            <View style={styles.surfacen}>
+                                        <View style={styles.rowcard}>
+                                          <View style={styles.column}>
+                                            <TouchableOpacity
+                                              onPress={() =>
+                                                navigation.navigate(
+                                                  'EPPStatement',
+                                                  {
+                                                    selectedDat: 30,
+                                                  },
+                                                )
+                                              }
+                                            >
+                                              {item.allCount > 0 ? (
+                                                <Surface style={styles.surface}>
+                                                  <Text style={styles.textn}>
+                                                    {item.allCount}
+                                                  </Text>
+                                                </Surface>
+                                              ) : (
+                                                <View style={styles.surfacen}>
+                                                  <Text
+                                                    style={{
+                                                      ...styles.textnn,
+                                                      color:
+                                                        theme === 'LIGHT'
+                                                          ? '#808080'
+                                                          : '#ffffff',
+                                                    }}
+                                                  >
+                                                    {item.allCount}
+                                                  </Text>
+                                                </View>
+                                              )}
+                                            </TouchableOpacity>
+                                            <View>
                                               <Text
                                                 style={{
-                                                  ...styles.textnn,
+                                                  ...styles.Property,
                                                   color:
                                                     theme === 'LIGHT'
-                                                      ? '#808080'
+                                                      ? 'rgb(153, 153, 153)'
                                                       : '#ffffff',
                                                 }}
                                               >
-                                                {item._7DayCount}
+                                                Past Alerts
                                               </Text>
                                             </View>
-                                          )}
-                                        </TouchableOpacity>
-                                        <View>
-                                          <Text
-                                            style={{
-                                              ...styles.Property,
-                                              color:
-                                                theme === 'LIGHT'
-                                                  ? 'rgb(153, 153, 153)'
-                                                  : '#ffffff',
-                                            }}
-                                          >
-                                            Last 7 Days
-                                          </Text>
+                                          </View>
                                         </View>
                                       </View>
-                                    </View>
-                                    <View style={styles.rowcard}>
-                                      <View style={styles.column}>
-                                        <TouchableOpacity
-                                          onPress={() =>
-                                            navigation.navigate(
-                                              'EPPStatement',
-                                              {
-                                                selectedDat: 30,
-                                              },
-                                            )
-                                          }
-                                        >
-                                          {item.allCount > 0 ? (
-                                            <Surface style={styles.surface}>
-                                              <Text style={styles.textn}>
-                                                {item.allCount}
-                                              </Text>
-                                            </Surface>
-                                          ) : (
-                                            <View style={styles.surfacen}>
-                                              <Text
-                                                style={{
-                                                  ...styles.textnn,
-                                                  color:
-                                                    theme === 'LIGHT'
-                                                      ? '#808080'
-                                                      : '#ffffff',
-                                                }}
-                                              >
-                                                {item.allCount}
-                                              </Text>
-                                            </View>
-                                          )}
-                                        </TouchableOpacity>
-                                        <View>
-                                          <Text
-                                            style={{
-                                              ...styles.Property,
-                                              color:
-                                                theme === 'LIGHT'
-                                                  ? 'rgb(153, 153, 153)'
-                                                  : '#ffffff',
-                                            }}
-                                          >
-                                            Past Alerts
-                                          </Text>
-                                        </View>
-                                      </View>
-                                    </View>
-                                  </View>
-                                </Fragment>
-                              )}
-                            />
-                          }
-                        </Fragment>
+                                    </Fragment>
+                                  )}
+                                />
+                              }
+                            </Fragment>
+                          )}
+                        </>
                       )}
                     </Card>
                     <LinearGradient
@@ -1128,9 +1135,7 @@ const App = ({ route, navigation }) => {
                                             </Surface>
                                           ) : (
                                             <View style={styles.surfacean}>
-                                              <Text
-                                                style={styles.textn}
-                                              >
+                                              <Text style={styles.textn}>
                                                 {item.todayCounts}
                                               </Text>
                                             </View>
@@ -1647,9 +1652,7 @@ const App = ({ route, navigation }) => {
                                           </Surface>
                                         ) : (
                                           <View style={styles.surfacean}>
-                                            <Text
-                                          style={styles.textn}
-                                            >
+                                            <Text style={styles.textn}>
                                               {item.TodayCount}
                                             </Text>
                                           </View>
@@ -1905,9 +1908,7 @@ const App = ({ route, navigation }) => {
                                             </Surface>
                                           ) : (
                                             <View style={styles.surfacean}>
-                                              <Text
-                                             style={styles.textn}
-                                              >
+                                              <Text style={styles.textn}>
                                                 {item.TodayCount}
                                               </Text>
                                             </View>
@@ -1947,9 +1948,7 @@ const App = ({ route, navigation }) => {
                                             </Surface>
                                           ) : (
                                             <View style={styles.surfacean}>
-                                              <Text
-                                               style={styles.textn}
-                                              >
+                                              <Text style={styles.textn}>
                                                 {item._7DayCount}
                                               </Text>
                                             </View>

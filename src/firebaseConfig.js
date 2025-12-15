@@ -1,6 +1,15 @@
-// firebaseConfig.js
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import notifee from '@notifee/react-native';
+
+// 🔹 Create Notification Channel (Android)
+export async function createNotificationChannel() {
+  await notifee.createChannel({
+    id: 'default',
+    name: 'Default Channel',
+    importance: notifee.AndroidImportance.HIGH,
+  });
+}
 
 // Ask Permission (Android 13+)
 export async function requestUserPermission() {
@@ -33,8 +42,17 @@ export async function getFcmToken() {
 }
 
 // Foreground Notification Listener
-export const notificationListener = async () => {
+export const notificationListener = () => {
   messaging().onMessage(async remoteMessage => {
     console.log('Foreground message: ', remoteMessage);
+
+    await notifee.displayNotification({
+      title: remoteMessage?.notification?.title ?? 'Notification',
+      body: remoteMessage?.notification?.body ?? '',
+      android: {
+        channelId: 'default',
+        pressAction: { id: 'default' },
+      },
+    });
   });
 };

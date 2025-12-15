@@ -14,6 +14,7 @@ import {
   requestUserPermission,
   getFcmToken,
   notificationListener,
+  createNotificationChannel,
 } from './src/firebaseConfig';
 import RNBootSplash from 'react-native-bootsplash';
 
@@ -23,6 +24,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    createNotificationChannel();
     requestUserPermission();
     getFcmToken();
     notificationListener();

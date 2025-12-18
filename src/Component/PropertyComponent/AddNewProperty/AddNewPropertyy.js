@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+// import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from 'react-native-toast-message';
 
@@ -48,10 +48,11 @@ const AddPropertyForm = ({ route, navigation }) => {
 
   const [Stateid, setStateId] = useState();
   const [loading, setLoading] = useState(false);
-  const [suggestionsList, setSuggestionsList] = useState(null);
+  const [suggestionsList, setSuggestionsList] = useState([]);
   const dropdownController = useRef(null);
   const searchRef = useRef(null);
-
+  const [villageQuery, setVillageQuery] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [DataMessage, setDataMessage] = useState([]);
 
   // ✅ Fetch States on Mount
@@ -137,7 +138,7 @@ const AddPropertyForm = ({ route, navigation }) => {
     async (q = '') => {
       const filterToken = q.toLowerCase();
       if (typeof q !== 'string' || q.length < 3) {
-        setSuggestionsList(null);
+        setSuggestionsList([]);
         return;
       }
       setLoading(true);
@@ -155,7 +156,7 @@ const AddPropertyForm = ({ route, navigation }) => {
           }));
           setSuggestionsList(suggestions);
         } else {
-          setSuggestionsList(null);
+          setSuggestionsList([]);
         }
       } catch (error) {
         console.error('Error fetching suggestions:', error);
@@ -168,7 +169,7 @@ const AddPropertyForm = ({ route, navigation }) => {
 
   // ✅ Clear inputs
   const handleCrossButtonPress = useCallback(() => {
-    setSuggestionsList(null);
+    setSuggestionsList([]);
     setSelectedDistrictID();
     setSelectedTalukaID();
     setSelectedVillageID();
@@ -240,7 +241,7 @@ const AddPropertyForm = ({ route, navigation }) => {
   // ✅ Render JSX
   return (
     <>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
           <Text style={styles.lable}>Select State Name*</Text>
           <SelectList
@@ -263,49 +264,53 @@ const AddPropertyForm = ({ route, navigation }) => {
           />
 
           <Text style={styles.lable}>Select Village/PinCode*</Text>
-          <AutocompleteDropdown
-            ref={searchRef}
-            controller={controller => (dropdownController.current = controller)}
-            dataSet={suggestionsList}
-            onChangeText={text => {
-              const filtered = text.replace(
-                /[^0-9A-Za-z/.+\-*]|(?<=\s)[^0-9A-Za-z/.+\-*]/g,
-                '',
-              );
-              getSuggestions(filtered);
-            }}
-            onSelectItem={item => {
-              if (item) {
-                setSelectedDistrictID(item.DistrictID);
-                setSelectedTalukaID(item.TalukaID);
-                setSelectedVillageID(item.id);
-                const parts = (item.title || '').split(',');
-                setselectedVillageName(parts[0]);
-                setselectedTalukaName(parts[1]);
-                setselectedDistrictName(parts[2]);
-              }
-            }}
-            debounce={600}
-            suggestionsListMaxHeight={Dimensions.get('window').height * 0.3}
-            onClear={handleCrossButtonPress}
-            loading={loading}
-            useFilter={false}
-            textInputProps={{
-              placeholder: placeholderValue,
-              autoCorrect: false,
-              style: {
-                borderRadius: 5,
-                backgroundColor: '#f5f5f5',
-                color: 'black',
-                borderColor: '#ccc',
-                paddingLeft: 18,
-                borderWidth: 0.1,
-              },
-            }}
-            inputHeight={50}
-            showChevron={false}
-            closeOnBlur={false}
-          />
+          <View style={{ position: 'relative' }}>
+            <TextInput
+              style={styles.input}
+              placeholder={placeholderValue}
+              value={villageQuery}
+              onChangeText={text => {
+                const filteredText = text.replace(
+                  /[^0-9A-Za-z/.+\-*]|(?<=\s)[^0-9A-Za-z/.+\-*]/g,
+                  '',
+                );
+                setVillageQuery(filteredText);
+                getSuggestions(filteredText);
+                setShowSuggestions(filteredText.length >= 3);
+              }}
+            />
+
+            {showSuggestions && suggestionsList.length > 0 && (
+              <View style={styles.suggestionBox}>
+                <FlatList
+                  data={suggestionsList}
+                  keyExtractor={item => item.id.toString()}
+                  keyboardShouldPersistTaps="handled"
+                  nestedScrollEnabled
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.suggestionItem}
+                      onPress={() => {
+                        setVillageQuery(item.title);
+                        setShowSuggestions(false);
+
+                        setSelectedDistrictID(item.DistrictID || null);
+                        setSelectedTalukaID(item.TalukaID || null);
+                        setSelectedVillageID(item.id || null);
+
+                        const titleParts = (item.title || '').split(',');
+                        setselectedVillageName(titleParts[0] || null);
+                        setselectedTalukaName(titleParts[1] || null);
+                        setselectedDistrictName(titleParts[2] || null);
+                      }}
+                    >
+                      <Text style={{ color: 'black' }}>{item.title}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
+          </View>
 
           <Text style={styles.lable}>Enter Survey Number</Text>
           <TextInput
@@ -416,7 +421,7 @@ const AddPropertyForm = ({ route, navigation }) => {
           </View>
         </View>
       </ScrollView>
-      <Toast/>
+      <Toast />
     </>
   );
 };
@@ -466,6 +471,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  suggestionBox: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    maxHeight: 200,
+    backgroundColor: '#f5f5f5',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    zIndex: 999,
+    elevation: 10,
+  },
+
+  suggestionItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderColor: '#e0e0e0',
   },
   lable: { fontWeight: '600', marginTop: 8, marginBottom: 5 },
   container: { padding: 20 },

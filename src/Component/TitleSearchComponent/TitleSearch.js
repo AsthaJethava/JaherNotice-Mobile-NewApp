@@ -32,11 +32,15 @@ import {
 import { SelectList } from 'react-native-dropdown-select-list';
 import Toast from 'react-native-toast-message';
 
-import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+// import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 // import {bootstrapAsync} from '../../../src/Navigation/index';
 // import NavigationService from '../../../src/helpers/NavigationService';
 
 const titelSearchha = ({ navigation, route }) => {
+  const [villageQueryR, setVillageQueryR] = useState('');
+  const [showSuggestionsR, setShowSuggestionsR] = useState(false);
+  const [villageQueryU, setVillageQueryU] = useState('');
+  const [showSuggestionsU, setShowSuggestionsU] = useState(false);
   const [vilagetalukadistrictdatad, setvilagetalukadistrictdatad] = useState(
     'Select Village, Taluka, District',
   );
@@ -1514,98 +1518,61 @@ const titelSearchha = ({ navigation, route }) => {
               <Text style={style.lable}>
                 Select Village,Taluka,District Name
               </Text>
-
-              <AutocompleteDropdown
-                ref={searchRef}
-                controller={controller => {
-                  dropdownController.current = controller;
-                }}
-                dataSet={datasdtv}
-                onChangeText={text => {
-                  const filteredText = text.replace(
-                    /[^0-9A-Za-z/.+\-*]|(?<=\s)[^0-9A-Za-z/.+\-*]/g,
-                    '',
-                  );
-                  dataList(filteredText);
-                }}
-                onSelectItem={item => {
-                  if (item) {
-                    // onSelectItem(item.value);
-                    const placeholder = item.value; // Adjust placeholder text as needed
-                    setPlaceholderValue(placeholder);
-                    setSelectedDistrict(item.value);
-                    console.log('Slelected Item Rular', item);
-                    const dynamicserviPlaceholderS = `Select Survey No.`;
-                    sethandleSurveyNoSelectP(dynamicserviPlaceholderS);
-                    const dynamicserviPlaceholdersS = `'Select City Survey Number`;
-                    sethandleSurveyNoSelectsP(dynamicserviPlaceholdersS);
-                    const dynamicserviPlaceholderT = `Select TP No.`;
-                    sethandleTPNoSelectP(dynamicserviPlaceholderT);
-                    const dynamicserviPlaceholderF = `Select FP No.`;
-                    sethandleFPNoSelectP(dynamicserviPlaceholderF);
-                    const dynamicserviPlaceholderB = `Select Building No.`;
-                    sethandleBuildingNoSelectP(dynamicserviPlaceholderB);
-                    const dynamicserviPlaceholderSO = `Select Society Name`;
-                    sethandleSocietySelectP(dynamicserviPlaceholderSO);
-                    // tableDatas();
-                    // tableDatat();
-                    // tableDataf();
-                    // tableDatab();
-                    // tableDataso();
-                  }
-                }}
-                debounce={600}
-                suggestionsListMaxHeight={Dimensions.get('window').height * 0.3}
-                onClear={onClearPress}
-                onOpenSuggestionsList={onOpenSuggestionsList}
-                loading={loading}
-                useFilter={false}
-                textInputProps={{
-                  placeholder: placeholderValue, // Conditional placeholder
-                  autoCorrect: false,
-                  autoCapitalize: 'none',
-                  style: {
+              <View style={{ position: 'relative' }}>
+                <TextInput
+                  placeholder={placeholderValue}
+                  value={villageQueryR}
+                  onChangeText={text => {
+                    const filteredText = text.replace(
+                      /[^0-9A-Za-z/.+\-*]|(?<=\s)[^0-9A-Za-z/.+\-*]/g,
+                      '',
+                    );
+                    setVillageQueryR(filteredText);
+                    dataList(filteredText);
+                    setShowSuggestionsR(filteredText.length >= 3);
+                  }}
+                  style={{
                     borderRadius: 5,
                     backgroundColor: '#f5f5f5',
                     color: 'black',
                     borderColor: '#ccc',
                     paddingLeft: 18,
-                    borderWidth: 0.1,
-                    borderRightWidth: 0,
-                  },
-                }}
-                rightButtonsContainerStyle={{
-                  right: 8,
-                  height: 30,
-                  alignSelf: 'center',
-                }}
-                rightButtons={() => (
-                  <TouchableOpacity onPress={handleCrossButtonPress}>
-                    {/* Use an appropriate image or icon for the cross button */}
-                    <Text
-                      style={{ width: 20, height: 20, color: 'black' }}
-                    ></Text>
-                  </TouchableOpacity>
+                    borderWidth: 1,
+                    height: 50,
+                  }}
+                />
+
+                {showSuggestionsR && datasdtv?.length > 0 && (
+                  <View style={style.suggestionBox}>
+                    <FlatList
+                      data={datasdtv}
+                      keyExtractor={(_, i) => i.toString()}
+                      keyboardShouldPersistTaps="handled"
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={style.suggestionItem}
+                          onPress={() => {
+                            setVillageQueryR(item.value);
+                            setPlaceholderValue(item.value);
+                            setSelectedDistrict(item.value);
+                            setShowSuggestionsR(false);
+                            sethandleSurveyNoSelectP('Select Survey No.');
+                            sethandleSurveyNoSelectsP(
+                              'Select City Survey Number',
+                            );
+                            sethandleTPNoSelectP('Select TP No.');
+                            sethandleFPNoSelectP('Select FP No.');
+                            sethandleBuildingNoSelectP('Select Building No.');
+                            sethandleSocietySelectP('Select Society Name');
+                          }}
+                        >
+                          <Text style={{ color: 'black' }}>{item.value}</Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
                 )}
-                inputContainerStyle={{
-                  backgroundColor: '#f5f5f5',
-                  borderColor: '#ccc',
-                  borderRadius: 5,
-                  borderWidth: 1,
-                }}
-                suggestionsListContainerStyle={{
-                  backgroundColor: '#f5f5f5',
-                }}
-                containerStyle={{ flexGrow: 1, flexShrink: 1 }}
-                renderItem={(item, text) => (
-                  <Text style={{ color: 'black', padding: 15 }}>
-                    {item.value}
-                  </Text>
-                )}
-                inputHeight={50}
-                showChevron={false}
-                closeOnBlur={false}
-              />
+              </View>
 
               {/* <SelectList
                 setSelected={selectedValue => {
@@ -1912,94 +1879,60 @@ const titelSearchha = ({ navigation, route }) => {
               <Text style={style.lable}>
                 Select ward,CitySurveyOffice,District Name
               </Text>
-              <AutocompleteDropdown
-                ref={searchRef}
-                controller={controller => {
-                  dropdownControllerU.current = controller;
-                }}
-                dataSet={datasdtvU}
-                onChangeText={text => {
-                  const filteredText = text.replace(
-                    /[^0-9A-Za-z/.+\-*]|(?<=\s)[^0-9A-Za-z/.+\-*]/g,
-                    '',
-                  );
-                  dataListU(filteredText);
-                }}
-                onSelectItem={item => {
-                  if (item) {
-                    const placeholder = item.value; // Adjust placeholder text as needed
-                    setPlaceholderValue(placeholder);
-                    console.log('Slelected Item Urban', item);
-                    setSelectedDistrict(item.value);
-                    const dynamicserviPlaceholdersS = `Select City Survey Number`;
-                    sethandleSurveyNoSelectsP(dynamicserviPlaceholdersS);
-                    const dynamicserviPlaceholderT = `Select TP No.`;
-                    sethandleTPNoSelectP(dynamicserviPlaceholderT);
-                    const dynamicserviPlaceholderF = `Select FP No.`;
-                    sethandleFPNoSelectP(dynamicserviPlaceholderF);
-                    const dynamicserviPlaceholderB = `Select Building No.`;
-                    sethandleBuildingNoSelectP(dynamicserviPlaceholderB);
-                    const dynamicserviPlaceholderSO = `Select Society Name`;
-                    sethandleSocietySelectP(dynamicserviPlaceholderSO);
-                    // tableDatasU();
-                    // tableDatatU();
-                    // tableDatafU();
-                    // tableDatabU();
-                    // tableDatasoU();
-                  }
-                }}
-                debounce={600}
-                suggestionsListMaxHeight={Dimensions.get('window').height * 0.3}
-                onClear={onClearPressU}
-                onOpenSuggestionsList={onOpenSuggestionsListU}
-                loading={loadingU}
-                useFilter={false}
-                textInputProps={{
-                  placeholder: placeholderValue, // Conditional placeholder
-                  autoCorrect: false,
-                  autoCapitalize: 'none',
-                  style: {
+              <View style={{ position: 'relative' }}>
+                <TextInput
+                  placeholder={placeholderValue}
+                  value={villageQueryU}
+                  onChangeText={text => {
+                    const filteredText = text.replace(
+                      /[^0-9A-Za-z/.+\-*]|(?<=\s)[^0-9A-Za-z/.+\-*]/g,
+                      '',
+                    );
+                    setVillageQueryU(filteredText);
+                    dataListU(filteredText);
+                    setShowSuggestionsU(filteredText.length >= 3);
+                  }}
+                  style={{
                     borderRadius: 5,
                     backgroundColor: '#f5f5f5',
                     color: 'black',
                     borderColor: '#ccc',
                     paddingLeft: 18,
-                    borderWidth: 0.1,
-                    borderRightWidth: 0,
-                  },
-                }}
-                rightButtonsContainerStyle={{
-                  right: 8,
-                  height: 30,
-                  alignSelf: 'center',
-                }}
-                rightButtons={() => (
-                  <TouchableOpacity onPress={handleCrossButtonPressU}>
-                    {/* Use an appropriate image or icon for the cross button */}
-                    <Text
-                      style={{ width: 20, height: 20, color: 'black' }}
-                    ></Text>
-                  </TouchableOpacity>
+                    borderWidth: 1,
+                    height: 50,
+                  }}
+                />
+
+                {showSuggestionsU && datasdtvU?.length > 0 && (
+                  <View style={style.suggestionBox}>
+                    <FlatList
+                      data={datasdtvU}
+                      keyExtractor={(_, i) => i.toString()}
+                      keyboardShouldPersistTaps="handled"
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={style.suggestionItem}
+                          onPress={() => {
+                            setVillageQueryU(item.value);
+                            setPlaceholderValue(item.value);
+                            setSelectedDistrict(item.value);
+                            setShowSuggestionsU(false);
+                            sethandleSurveyNoSelectsP(
+                              'Select City Survey Number',
+                            );
+                            sethandleTPNoSelectP('Select TP No.');
+                            sethandleFPNoSelectP('Select FP No.');
+                            sethandleBuildingNoSelectP('Select Building No.');
+                            sethandleSocietySelectP('Select Society Name');
+                          }}
+                        >
+                          <Text style={{ color: 'black' }}>{item.value}</Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
                 )}
-                inputContainerStyle={{
-                  backgroundColor: '#f5f5f5',
-                  borderColor: '#ccc',
-                  borderRadius: 5,
-                  borderWidth: 1,
-                }}
-                suggestionsListContainerStyle={{
-                  backgroundColor: '#f5f5f5',
-                }}
-                containerStyle={{ flexGrow: 1, flexShrink: 1 }}
-                renderItem={(item, text) => (
-                  <Text style={{ color: 'black', padding: 15 }}>
-                    {item.value}
-                  </Text>
-                )}
-                inputHeight={50}
-                showChevron={false}
-                closeOnBlur={false}
-              />
+              </View>
 
               {/* <SelectList
                 setSelected={selectedValue => {
@@ -2280,6 +2213,23 @@ const titelSearchha = ({ navigation, route }) => {
 };
 
 const style = StyleSheet.create({
+  suggestionBox: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    maxHeight: 200,
+    backgroundColor: '#f5f5f5',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    zIndex: 999,
+    elevation: 10,
+  },
+  suggestionItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderColor: '#e0e0e0',
+  },
   containernn: {
     flex: 1,
     backgroundColor: '#f0f0f0',

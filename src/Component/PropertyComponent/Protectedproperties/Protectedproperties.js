@@ -151,7 +151,7 @@ const Protectedproperties = ({ navigation }) => {
       style={{
         ...styles.Container,
         backgroundColor: theme === 'LIGHT' ? '#efefef' : '#20272b',
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, // ✅ Fix header overlap
+        // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, // ✅ Fix header overlap
       }}
     >
       <StatusBar animated={true} backgroundColor={statusBarBackgroundColor} />

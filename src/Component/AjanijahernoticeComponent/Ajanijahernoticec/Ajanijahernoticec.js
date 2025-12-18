@@ -383,7 +383,8 @@ const PropertyToDistrict = ({ route, navigation }) => {
                           theme === 'LIGHT' ? '#f5f5f5' : '#484c54',
                         // #696969
                         flexDirection: 'row',
-                        justifyContent: 'center',
+                        flexWrap: 'wrap',
+                        paddingHorizontal: 10,
                         alignItems: 'center',
                       }}
                     >
@@ -742,8 +743,8 @@ const styles = StyleSheet.create({
   Container: {
     width: '100%',
     backgroundColor: '#ffffff',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    paddingHorizontal: 12,
   },
   Containeraa: {
     width: '100%',
@@ -763,36 +764,33 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   Logo: {
-    width: 80,
-    height: 50,
-    marginTop: 90,
-    marginLeft: 23,
-    marginRight: 5,
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    // marginVertical: 10,
+    resizeMode: 'contain',
   },
   heding: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
     marginTop: -20,
     marginBottom: 15,
     width: '85%',
   },
   num: {
-    justifyContent: 'center',
-    textAlign: 'center',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'left',
+    flexWrap: 'wrap',
   },
   numt: {
-    justifyContent: 'center',
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: 'normal',
-    textAlign: 'left',
+    fontSize: 16,
+    flexWrap: 'wrap',
   },
   bottom: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '80%',
+    width: '100%',
   },
 });
 

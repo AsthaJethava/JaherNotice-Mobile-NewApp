@@ -336,7 +336,7 @@ const Bppalert = ({ route, navigation }) => {
                       onRefresh={onRefresh}
                     />
                   }
-                  renderItem={({ item }) => (
+                  renderItem={({ item , index}) => (
                     <Fragment key={index}>
                       <Card
                         style={{

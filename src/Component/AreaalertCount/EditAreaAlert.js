@@ -11,10 +11,10 @@ import {
   Dimensions,
   Platform,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -31,7 +31,8 @@ const EditAreaAlert = ({ route, navigation }) => {
   const handleLogout = () => {
     setLogoutModalVisible(false);
   };
-
+  const [villageQuery, setVillageQuery] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
   // useEffect(() => {
   //   bootstrapAsync().then(({isUserActive}) => {
   //     if (isUserActive) {
@@ -118,9 +119,7 @@ const EditAreaAlert = ({ route, navigation }) => {
     //   villageaID,
     //   id,
     // );
-    setPlaceholderValue([
-      villagea + ',' + ' ' + talukaa + ',' + ' ' + districta,
-    ]);
+    setPlaceholderValue(`${villagea}, ${talukaa}, ${districta}`);
     setSelectedDistrictID(districtaID);
     setSelectedTalukaID(talukaaID);
     setSelectedVillageID(villageaID);
@@ -239,23 +238,17 @@ const EditAreaAlert = ({ route, navigation }) => {
 
   const [Stateid, setStateId] = useState();
   const [loading, setLoading] = useState(false);
-  const [suggestionsList, setSuggestionsList] = useState(null);
+  const [suggestionsList, setSuggestionsList] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const dropdownController = useRef(null);
   const searchRef = useRef(null);
-
-  useEffect(() => {
-    if (Stateid) {
-      getSuggestions();
-    }
-  }, [Stateid]);
 
   const getSuggestions = useCallback(
     async (q = '') => {
       const filterToken = q.toLowerCase();
 
       if (typeof q !== 'string' || q.length < 3) {
-        setSuggestionsList(null);
+        setSuggestionsList([]);
         return;
       }
 
@@ -276,11 +269,11 @@ const EditAreaAlert = ({ route, navigation }) => {
           }));
           setSuggestionsList(suggestions);
         } else {
-          setSuggestionsList(null);
+          setSuggestionsList([]);
         }
       } catch (error) {
         console.error('Error fetching suggestions:', error);
-        setSuggestionsList(null);
+        setSuggestionsList([]);
       } finally {
         setLoading(false);
       }
@@ -289,7 +282,7 @@ const EditAreaAlert = ({ route, navigation }) => {
   );
 
   const onClearPress = useCallback(() => {
-    setSuggestionsList(null);
+    setSuggestionsList([]);
     setSelectedDistrictID();
     setSelectedTalukaID();
     setSelectedVillageID();
@@ -421,7 +414,7 @@ const EditAreaAlert = ({ route, navigation }) => {
 
   return (
     <>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
           <Text style={styles.lable}>Select State Name*</Text>
           <SelectList
@@ -462,84 +455,51 @@ const EditAreaAlert = ({ route, navigation }) => {
             }}
           />
           <Text style={styles.lable}>Select Village/PinCode*</Text>
-          <AutocompleteDropdown
-            ref={searchRef}
-            controller={controller => {
-              dropdownController.current = controller;
-            }}
-            dataSet={suggestionsList}
-            // onChangeText={getSuggestions}
-            onChangeText={text => {
-              const filteredText = text.replace(
-                /[^0-9A-Za-z/.+\-*]|(?<=\s)[^0-9A-Za-z/.+\-*]/g,
-                '',
-              );
-              getSuggestions(filteredText);
-            }}
-            onSelectItem={item => {
-              if (item) {
-                setSelectedItem(item.id);
-                // console.log('Selected item:', item);
+          <View style={{ position: 'relative', zIndex: 10 }}>
+            <TextInput
+              style={styles.input}
+              placeholder={placeholderValue}
+              placeholderTextColor="#000"
+              value={villageQuery}
+              onChangeText={text => {
+                const filteredText = text.replace(
+                  /[^0-9A-Za-z/.+\-*]|(?<=\s)[^0-9A-Za-z/.+\-*]/g,
+                  '',
+                );
+                setVillageQuery(filteredText);
+                getSuggestions(filteredText);
+                setShowSuggestions(filteredText.length >= 3);
+              }}
+            />
+            {showSuggestions && suggestionsList.length > 0 && (
+              <View style={styles.suggestionBox}>
+                <FlatList
+                  data={suggestionsList}
+                  keyExtractor={item => String(item.id)}
+                  keyboardShouldPersistTaps="handled"
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.suggestionItem}
+                      onPress={() => {
+                        setVillageQuery(item.title);
+                        setShowSuggestions(false);
+                        setSelectedDistrictID(item.DistrictID);
+                        setSelectedTalukaID(item.TalukaID);
+                        setSelectedVillageID(item.id);
 
-                // Add null checks before accessing properties
-                setSelectedDistrictID(item.DistrictID || null);
-                setSelectedTalukaID(item.TalukaID || null);
-                setSelectedVillageID(item.id || null);
-
-                const titleParts = (item.title || '').split(',');
-                setselectedVillageName(titleParts[0] || null);
-                setselectedTalukaName(titleParts[1] || null);
-                setselectedDistrictName(titleParts[2] || null);
-              }
-            }}
-            debounce={600}
-            suggestionsListMaxHeight={Dimensions.get('window').height * 0.3}
-            onClear={onClearPress}
-            onOpenSuggestionsList={onOpenSuggestionsList}
-            loading={loading}
-            useFilter={false}
-            textInputProps={{
-              placeholder: nameDTV,
-              autoCorrect: false,
-              autoCapitalize: 'none',
-              style: {
-                borderRadius: 5,
-                backgroundColor: '#f5f5f5',
-                color: 'black',
-                borderColor: '#ccc',
-                paddingLeft: 18,
-                borderWidth: 0.1,
-                borderRightWidth: 0,
-              },
-            }}
-            rightButtonsContainerStyle={{
-              right: 8,
-              height: 30,
-              alignSelf: 'center',
-            }}
-            rightButtons={() => (
-              <TouchableOpacity onPress={handleCrossButtonPress}>
-                {/* Use an appropriate image or icon for the cross button */}
-                <Text style={{ width: 20, height: 20, Color: 'black' }}></Text>
-              </TouchableOpacity>
+                        const parts = item.title.split(',');
+                        setselectedVillageName(parts[0] || null);
+                        setselectedTalukaName(parts[1] || null);
+                        setselectedDistrictName(parts[2] || null);
+                      }}
+                    >
+                      <Text style={{ color: '#000' }}>{item.title}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
             )}
-            inputContainerStyle={{
-              backgroundColor: '#f5f5f5',
-              borderColor: '#ccc',
-              borderRadius: 5,
-              borderWidth: 1,
-            }}
-            suggestionsListContainerStyle={{
-              backgroundColor: '#f5f5f5',
-            }}
-            containerStyle={{ flexGrow: 1, flexShrink: 1 }}
-            renderItem={(item, text) => (
-              <Text style={{ color: 'black', padding: 15 }}>{item.title}</Text>
-            )}
-            inputHeight={50}
-            showChevron={false}
-            closeOnBlur={false}
-          />
+          </View>
           {/* <Text style={styles.lable}>Select Village/PinCode*</Text>
           <SelectList
             setSelected={selectedValue => {
@@ -637,7 +597,7 @@ const EditAreaAlert = ({ route, navigation }) => {
           </View>
         </View>
       </ScrollView>
-      <Toast/>
+      <Toast />
     </>
   );
 };
@@ -704,6 +664,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 8,
     marginBottom: 5,
+  },
+  suggestionBox: {
+    position: 'absolute',
+    top: 55,
+    left: 0,
+    right: 0,
+    maxHeight: 200,
+    backgroundColor: '#f5f5f5',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    zIndex: 9999,
+    elevation: 15,
+  },
+  suggestionItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderColor: '#e0e0e0',
   },
   // modalContent: {
   //   width: 300,

@@ -268,6 +268,7 @@ const AddPropertyForm = ({ route, navigation }) => {
             <TextInput
               style={styles.input}
               placeholder={placeholderValue}
+              placeholderTextColor="#000000"
               value={villageQuery}
               onChangeText={text => {
                 const filteredText = text.replace(
@@ -316,6 +317,7 @@ const AddPropertyForm = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Enter Survey Number"
+            placeholderTextColor="#000000"
             value={selectsurvey}
             onChangeText={text =>
               setSelectSurvey(text.replace(/[^0-9A-Za-z/.+\-]/g, ''))
@@ -326,6 +328,7 @@ const AddPropertyForm = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Enter TP Number"
+            placeholderTextColor="#000000"
             value={selecttp}
             onChangeText={text =>
               setSelectTP(text.replace(/[^0-9A-Za-z/.+\-]/g, ''))
@@ -336,6 +339,7 @@ const AddPropertyForm = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Enter FP Number"
+            placeholderTextColor="#000000"
             value={selectfp}
             onChangeText={text =>
               setSelectFP(text.replace(/[^0-9A-Za-z/.+\-]/g, ''))
@@ -346,6 +350,7 @@ const AddPropertyForm = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Enter Building Number"
+            placeholderTextColor="#000000"
             value={BuildingNo}
             onChangeText={text =>
               setBuildingNo(text.replace(/[^0-9A-Za-z/.+\-]/g, ''))
@@ -356,6 +361,7 @@ const AddPropertyForm = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Enter Society Name"
+            placeholderTextColor="#000000"
             value={SocietyName}
             onChangeText={text =>
               setSocietyName(

@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { ActivityIndicator, View, LogBox } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import AuthorizedUser from '../AuthorizedUser/AuthorizedUser';
 import UnAuthorizedUser from '../UnAuthorizedUser/UnAuthorizedUser';
 import NavigationService from './NavigationService';
@@ -48,17 +48,22 @@ const Navigation = () => {
   }
 
   return (
-    <NavigationContainer ref={NavigationService.navigationRef}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isLoggedIn ? (
-          // USER IS LOGGED IN → SHOW AUTHORIZED STACK
-          <Stack.Screen name="AuthorizedUser" component={AuthorizedUser} />
-        ) : (
-          // USER IS NOT LOGGED IN → SHOW UNAUTHORIZED STACK
-          <Stack.Screen name="UnAuthorizedUser" component={UnAuthorizedUser} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer ref={NavigationService.navigationRef}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {isLoggedIn ? (
+            // USER IS LOGGED IN → SHOW AUTHORIZED STACK
+            <Stack.Screen name="AuthorizedUser" component={AuthorizedUser} />
+          ) : (
+            // USER IS NOT LOGGED IN → SHOW UNAUTHORIZED STACK
+            <Stack.Screen
+              name="UnAuthorizedUser"
+              component={UnAuthorizedUser}
+            />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 };
 

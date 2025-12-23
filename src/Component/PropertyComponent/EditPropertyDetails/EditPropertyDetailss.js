@@ -480,6 +480,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             placeholder={placeholderValue}
+            placeholderTextColor="#000000"
             value={villageQuery}
             onChangeText={text => {
               const filteredText = text.replace(
@@ -527,6 +528,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter Survey Number"
+          placeholderTextColor="#000000"
           // keyboardType={'numeric'}
           value={surveyNumber}
           onChangeText={text => {
@@ -542,6 +544,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter TP Number"
+          placeholderTextColor="#000000"
           // keyboardType={'numeric'}
           value={tpNumber}
           onChangeText={text => {
@@ -556,6 +559,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter FP Number"
+          placeholderTextColor="#000000"
           // keyboardType={'numeric'}
           value={fpNumber}
           onChangeText={text => {
@@ -570,6 +574,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter Building Number"
+          placeholderTextColor="#000000"
           // keyboardType={'numeric'}
           value={buildingNumber}
           onChangeText={text => {
@@ -584,6 +589,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter Society Name"
+          placeholderTextColor="#000000"
           value={selectedSociety}
           onChangeText={text => {
             const filteredTexts = text.replace(
@@ -842,7 +848,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
   },
 });

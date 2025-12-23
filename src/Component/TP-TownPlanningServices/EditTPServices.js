@@ -649,12 +649,12 @@ function AddTPServices({ route, navigation }) {
             <Text style={styles.lable}>Service Name*</Text>
             <TextInput
               placeholder={ServicesubTypeIDname}
+              placeholderTextColor="#000000"
               editable={false}
               style={{
                 borderRadius: 5,
                 borderColor: '#c0c0c0',
                 // backgroundColor: '#f8f8ff',
-                borderColor: '#c0c0c0',
                 borderWidth: 1,
                 height: 45,
                 padding: 10,
@@ -667,12 +667,12 @@ function AddTPServices({ route, navigation }) {
             <Text style={styles.lable}>Sub Service Name*</Text>
             <TextInput
               placeholder={selectedStatename}
+              placeholderTextColor="#000000"
               editable={false}
               style={{
                 borderRadius: 5,
                 borderColor: '#c0c0c0',
                 // backgroundColor: '#f8f8ff',
-                borderColor: '#c0c0c0',
                 borderWidth: 1,
                 height: 45,
                 padding: 10,

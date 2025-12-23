@@ -49,7 +49,6 @@ import TitleSearch from '../../TitleSearchComponent/TitleSearch.json';
 import { SelectList } from 'react-native-dropdown-select-list';
 import LandRecordState from '../../LandRecord/LandRecordState.json';
 import NetInfo from '@react-native-community/netinfo';
-
 const BadgedIcon = withBadge(15)(Icon);
 
 const App = ({ route, navigation }) => {
@@ -463,40 +462,40 @@ const App = ({ route, navigation }) => {
             source={theme === 'LIGHT' ? Jahernoticelog : Jahernoticelogw}
             style={styles.Logo}
           />
-          <View style={styles.iconm}>
-            <TouchableOpacity style={styles.LogoTh}>
-              {/* {isDarkMode ? (
-          <Ionicons name="md-moon" style={styles.LogoThaW} />
-        ) : (
-          <Ionicons name="md-moon" style={styles.LogoTha} />
-        )} */}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.iconma}>
-            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                }}
-              >
+          <View style={{ flex: 1 }} />
+          {/* <View style={styles.iconma}> */}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Profile')}
+            style={{ maxWidth: '45%' }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <View style={{ maxWidth: '65%', alignItems: 'flex-end' }}>
                 <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                   style={{
                     ...styles.iconat,
                     color: theme === 'LIGHT' ? 'rgb(193, 39, 45)' : '#ffffff',
-                    marginRight: 10,
+                    textAlign: 'right',
+                    flexShrink: 1,
                   }}
                 >
                   {FirstName} {LastName}
                 </Text>
-                <Image
-                  source={Profile}
-                  style={{ ...styles.icona, marginRight: 10 }}
-                />
               </View>
-            </TouchableOpacity>
-          </View>
+              <Image
+                source={Profile}
+                style={{ ...styles.icona, marginRight: 10 }}
+              />
+            </View>
+          </TouchableOpacity>
+          {/* </View> */}
         </View>
       </Card>
       <LinearGradient
@@ -1092,7 +1091,7 @@ const App = ({ route, navigation }) => {
                                                   color:
                                                     theme === 'LIGHT'
                                                       ? '#808080'
-                                                      : '#ffffff',
+                                                      : 'black',
                                                 }}
                                               >
                                                 {item.AreaCount}
@@ -1178,7 +1177,7 @@ const App = ({ route, navigation }) => {
                                                   color:
                                                     theme === 'LIGHT'
                                                       ? '#808080'
-                                                      : '#ffffff',
+                                                      : 'black',
                                                 }}
                                               >
                                                 {item._7dayCounts}
@@ -1606,7 +1605,7 @@ const App = ({ route, navigation }) => {
                                                 color:
                                                   theme === 'LIGHT'
                                                     ? '#808080'
-                                                    : '#ffffff',
+                                                    : 'black',
                                               }}
                                             >
                                               {item.Auction_Counts}
@@ -1862,7 +1861,7 @@ const App = ({ route, navigation }) => {
                                                   color:
                                                     theme === 'LIGHT'
                                                       ? '#808080'
-                                                      : '#ffffff',
+                                                      : 'black',
                                                 }}
                                               >
                                                 {item.TP_Counts}
@@ -2404,15 +2403,17 @@ const styles = StyleSheet.create({
   Logo: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '22%',
-    height: 37,
-    marginLeft: 11,
-    marginTop: 12,
+    width: 110, // ✅ predictable
+    height: 45, // ✅ enough for zoom
+    resizeMode: 'contain', // ✅ never crop
+    marginLeft: 12,
   },
   Containerimg: {
     flexDirection: 'row',
     width: '100%',
-    height: '8%',
+    minHeight: 80,
+    alignItems: 'center',
+    paddingVertical: 8,
   },
   iconm: {
     justifyContent: 'center',
@@ -2434,7 +2435,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     justifyContent: 'flex-end',
-    marginTop: 25,
+    marginLeft: 8,
   },
   iconat: {
     height: 28,
@@ -2442,7 +2443,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    marginTop: 30,
+    marginTop: 13,
   },
   LogoTh: {
     width: '50%',

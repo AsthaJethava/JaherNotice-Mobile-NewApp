@@ -627,6 +627,7 @@ function AddTPServices({ route, navigation }) {
               save="key"
               data={Services}
               placeholder={'Select Auction For*'}
+              placeholderTextColor="#000000"
               boxStyles={{
                 // marginTop: 25,
                 borderRadius: 5,

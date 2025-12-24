@@ -632,6 +632,7 @@ function AddTPServices({route, navigation}) {
             <Text style={styles.lable}>Select Auction For*</Text>
             <TextInput
               placeholder={SubType_Namea}
+              placeholderTextColor="#000000"
               editable={false}
               style={{
                 borderRadius: 5,

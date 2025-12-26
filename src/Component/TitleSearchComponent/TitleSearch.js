@@ -1501,7 +1501,7 @@ const titelSearchha = ({ navigation, route }) => {
           <Text style={style.lable}>Service Name</Text>
           <TextInput
             placeholder={newData}
-            placeholderTextColor="#000000"
+            placeholderTextColor="grey"
             editable={false}
             style={{
               borderRadius: 5,
@@ -1522,7 +1522,7 @@ const titelSearchha = ({ navigation, route }) => {
               <View style={{ position: 'relative' }}>
                 <TextInput
                   placeholder={placeholderValue}
-                  placeholderTextColor="#000000"
+                  placeholderTextColor="grey"
                   value={villageQueryR}
                   onChangeText={text => {
                     const filteredText = text.replace(
@@ -1884,7 +1884,7 @@ const titelSearchha = ({ navigation, route }) => {
               <View style={{ position: 'relative' }}>
                 <TextInput
                   placeholder={placeholderValue}
-                  placeholderTextColor="#000000"
+                  placeholderTextColor="grey"
                   value={villageQueryU}
                   onChangeText={text => {
                     const filteredText = text.replace(

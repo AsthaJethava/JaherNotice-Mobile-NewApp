@@ -627,7 +627,7 @@ function AddTPServices({ route, navigation }) {
               save="key"
               data={Services}
               placeholder={'Select Auction For*'}
-              placeholderTextColor="#000000"
+              placeholderTextColor="grey"
               boxStyles={{
                 // marginTop: 25,
                 borderRadius: 5,
@@ -1107,7 +1107,7 @@ function AddTPServices({ route, navigation }) {
             isVisible={modalVisible}
             onDelete={handleDelete}
           />
-          <Toast/>
+          <Toast />
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode="date"

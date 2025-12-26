@@ -480,7 +480,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             placeholder={placeholderValue}
-            placeholderTextColor="#000000"
+            placeholderTextColor="grey"
             value={villageQuery}
             onChangeText={text => {
               const filteredText = text.replace(
@@ -528,7 +528,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter Survey Number"
-          placeholderTextColor="#000000"
+          placeholderTextColor="grey"
           // keyboardType={'numeric'}
           value={surveyNumber}
           onChangeText={text => {
@@ -544,7 +544,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter TP Number"
-          placeholderTextColor="#000000"
+          placeholderTextColor="grey"
           // keyboardType={'numeric'}
           value={tpNumber}
           onChangeText={text => {
@@ -559,7 +559,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter FP Number"
-          placeholderTextColor="#000000"
+          placeholderTextColor="grey"
           // keyboardType={'numeric'}
           value={fpNumber}
           onChangeText={text => {
@@ -574,7 +574,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter Building Number"
-          placeholderTextColor="#000000"
+          placeholderTextColor="grey"
           // keyboardType={'numeric'}
           value={buildingNumber}
           onChangeText={text => {
@@ -589,7 +589,7 @@ const EditPropertyDetails = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter Society Name"
-          placeholderTextColor="#000000"
+          placeholderTextColor="grey"
           value={selectedSociety}
           onChangeText={text => {
             const filteredTexts = text.replace(

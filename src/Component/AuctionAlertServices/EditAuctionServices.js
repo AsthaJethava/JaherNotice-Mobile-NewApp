@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   Picker,
   FlatList,
 } from 'react-native';
-import {SelectList} from 'react-native-dropdown-select-list';
+import { SelectList } from 'react-native-dropdown-select-list';
 import LandRecordState from '../LandRecord/LandRecordState.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
@@ -23,7 +23,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 // import {bootstrapAsync} from '../../../src/Navigation/index';
 // import NavigationService from '../../../src/helpers/NavigationService';
 
-function AddTPServices({route, navigation}) {
+function AddTPServices({ route, navigation }) {
   const [Dataaa, setDataaa] = useState();
   // console.log('message', Dataaa);
   //
@@ -36,7 +36,7 @@ function AddTPServices({route, navigation}) {
     handleReset();
     setLogoutModalVisible(false);
   };
-  const LogoutConfirmationModal = ({visible, onCancel, onLogout, show}) => {
+  const LogoutConfirmationModal = ({ visible, onCancel, onLogout, show }) => {
     // const message = Dataaa.length > 0 ? Dataaa[0].message : '';
     // console.log('message==bhola', show);
     return (
@@ -45,20 +45,22 @@ function AddTPServices({route, navigation}) {
           <View
             style={{
               ...styles.modalContent,
-            }}>
+            }}
+          >
             <View
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginTop: 5,
                 marginBottom: 15,
-              }}>
+              }}
+            >
               <AntDesign name="checkcircleo" size={60} color={'#32cd32'} />
             </View>
 
             <FlatList
               data={show}
-              renderItem={({item, index}) => (
+              renderItem={({ item, index }) => (
                 <>
                   <View style={styles.modalTextaa}>
                     <Text style={styles.modalTexta}>{item.message}</Text>
@@ -74,7 +76,8 @@ function AddTPServices({route, navigation}) {
                   setTimeout(() => {
                     navigation.navigate('AuctionAlertServicesCount');
                   }, 100);
-                }}>
+                }}
+              >
                 <Text style={styles.buttonText}>OK</Text>
               </TouchableOpacity>
             </View>
@@ -90,7 +93,7 @@ function AddTPServices({route, navigation}) {
     requestData();
   };
 
-  const DeleteConfirmationModal = ({isVisible, onDelete}) => {
+  const DeleteConfirmationModal = ({ isVisible, onDelete }) => {
     return (
       <Modal visible={isVisible} transparent={true}>
         <View style={styles.modalContainera}>
@@ -257,7 +260,7 @@ function AddTPServices({route, navigation}) {
       .then(response => response.json())
       .then(result => {
         let newArray = result.map(item => {
-          return {key: item.id, keya: item.id === 7, value: item.statename};
+          return { key: item.id, keya: item.id === 7, value: item.statename };
         });
         newArray.forEach(item => {
           if (item.keya) {
@@ -632,7 +635,7 @@ function AddTPServices({route, navigation}) {
             <Text style={styles.lable}>Select Auction For*</Text>
             <TextInput
               placeholder={SubType_Namea}
-              placeholderTextColor="#000000"
+              placeholderTextColor="grey"
               editable={false}
               style={{
                 borderRadius: 5,
@@ -1016,7 +1019,8 @@ function AddTPServices({route, navigation}) {
                             bottomOffset: 50,
                           });
                         }
-                      }}>
+                      }}
+                    >
                       <Text style={styles.buttonText}>Update</Text>
                     </TouchableOpacity>
                   </>
@@ -1065,7 +1069,8 @@ function AddTPServices({route, navigation}) {
                             bottomOffset: 50,
                           });
                         }
-                      }}>
+                      }}
+                    >
                       <Text style={styles.buttonText}>Update</Text>
                     </TouchableOpacity>
                   </>
@@ -1112,7 +1117,8 @@ function AddTPServices({route, navigation}) {
                             bottomOffset: 50,
                           });
                         }
-                      }}>
+                      }}
+                    >
                       <Text style={styles.buttonText}>Update</Text>
                     </TouchableOpacity>
                   </>
@@ -1150,7 +1156,8 @@ function AddTPServices({route, navigation}) {
                       bottomOffset: 50,
                     });
                   }
-                }}>
+                }}
+              >
                 <Text style={styles.buttonText}>Add</Text>
               </TouchableOpacity>
             ) : null}
@@ -1159,7 +1166,7 @@ function AddTPServices({route, navigation}) {
             isVisible={modalVisible}
             onDelete={handleDelete}
           />
-          <Toast/>
+          <Toast />
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode="date"

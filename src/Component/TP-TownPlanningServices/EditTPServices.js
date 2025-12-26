@@ -649,7 +649,7 @@ function AddTPServices({ route, navigation }) {
             <Text style={styles.lable}>Service Name*</Text>
             <TextInput
               placeholder={ServicesubTypeIDname}
-              placeholderTextColor="#000000"
+              placeholderTextColor="grey"
               editable={false}
               style={{
                 borderRadius: 5,
@@ -667,7 +667,7 @@ function AddTPServices({ route, navigation }) {
             <Text style={styles.lable}>Sub Service Name*</Text>
             <TextInput
               placeholder={selectedStatename}
-              placeholderTextColor="#000000"
+              placeholderTextColor="grey"
               editable={false}
               style={{
                 borderRadius: 5,
@@ -1226,7 +1226,7 @@ function AddTPServices({ route, navigation }) {
             isVisible={modalVisible}
             onDelete={handleDelete}
           />
-          <Toast/>
+          <Toast />
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode="date"

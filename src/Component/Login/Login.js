@@ -250,6 +250,8 @@ const Login = ({ navigation }) => {
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
+                  width: '90%',
+                  height: 140,
                 }}
                 resizeMode="contain"
               />

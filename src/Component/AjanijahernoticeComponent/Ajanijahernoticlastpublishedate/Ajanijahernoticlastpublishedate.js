@@ -280,7 +280,7 @@ function Ajanijahernoticlastpublishedate({ route, navigation }) {
                                   color: theme === 'LIGHT' ? '#000' : '#ffffff',
                                 }}
                               >
-                                City/Survey No :{' '}
+                                City/Revenue Survey No :{' '}
                                 <Text style={styles.numt}>{item.survey}</Text>
                               </Text>
                             </View>

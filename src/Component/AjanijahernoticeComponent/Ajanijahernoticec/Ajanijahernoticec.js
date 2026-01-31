@@ -494,7 +494,7 @@ const PropertyToDistrict = ({ route, navigation }) => {
                                 color: theme === 'LIGHT' ? '#000' : '#ffffff',
                               }}
                             >
-                              City/Survey No:{' '}
+                              City/Revenue Survey No:{' '}
                               {item.survey === '--' ? null : (
                                 <Text style={styles.numt}>{item.survey}</Text>
                               )}

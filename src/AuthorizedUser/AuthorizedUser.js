@@ -41,6 +41,8 @@ import TitleSearch from '../Component/TitleSearchComponent/TitleSearch';
 import TitleSearchCount from '../Component/TitleSearchComponent/TitleSearchCount.js';
 import LandRecord from '../Component/LandRecord/LandRecord';
 import LandRecordForm from '../Component/LandRecord/LandRecordForm';
+import AuctionAlertServicesViewNotice from '../Component/AuctionAlertServices/AuctionAlertServicesViewNotice';
+import TownPlanningServicesViewNotice from '../Component/TP-TownPlanningServices/TownPlanningServicesViewNotice';
 import { LogBox } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
@@ -50,6 +52,9 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import NotificationImage from '../Component/PushNotificationImage/Image';
 import { Appearance, View } from 'react-native';
+import ReactNativeBlobUtil from 'react-native-blob-util';
+import Share from 'react-native-share';
+import { Platform } from 'react-native';
 
 const AuthorizedUser = () => {
   const Stack = createNativeStackNavigator();
@@ -79,34 +84,62 @@ const AuthorizedUser = () => {
       listener.remove(); // Remove the change listener on component unmount
     };
   }, []);
+  const shareFile = async fileUrl => {
+    if (!fileUrl) return;
 
-  const sharePDF = async () => {
-    const pdfUrl = img; // Replace with your PDF file URL
-    console.log('PDF==URL', pdfUrl);
     try {
-      const response = await RNFetchBlob.fetch('GET', pdfUrl);
-      const status = response.info().status;
+      let extension = 'jpg';
+      if (fileUrl.includes('.png')) extension = 'png';
+      else if (fileUrl.includes('.webp')) extension = 'webp';
+      else if (fileUrl.includes('.pdf')) extension = 'pdf';
 
-      if (status === 200) {
-        const base64Str = response.base64();
-        const options = {
-          title: 'Share PDF',
-          url: `data:application/pdf;base64,${base64Str}`,
-        };
+      const filePath =
+        ReactNativeBlobUtil.fs.dirs.CacheDir +
+        `/share_${Date.now()}.${extension}`;
 
-        try {
-          await Share.open(options);
-        } catch (error) {
-          console.error('Error sharing PDF:', error.message);
-        }
-      } else {
-        // Handle other status codes
-        console.error('Failed to fetch PDF. Status code:', status);
+      const res = await ReactNativeBlobUtil.config({
+        fileCache: true,
+        path: filePath, // 🔥 EXTENSION FORCED
+      }).fetch('GET', fileUrl);
+
+      await Share.open({
+        url: 'file://' + res.path(),
+        type: extension === 'pdf' ? 'application/pdf' : `image/${extension}`,
+      });
+    } catch (err) {
+      if (err.message !== 'User did not share') {
+        console.log('Share error:', err);
       }
-    } catch (error) {
-      console.error('Error fetching PDF:', error.message);
     }
   };
+
+  // const sharePDF = async () => {
+  //   const pdfUrl = img; // Replace with your PDF file URL
+  //   console.log('PDF==URL', pdfUrl);
+  //   try {
+  //     const response = await RNFetchBlob.fetch('GET', pdfUrl);
+  //     const status = response.info().status;
+
+  //     if (status === 200) {
+  //       const base64Str = response.base64();
+  //       const options = {
+  //         title: 'Share PDF',
+  //         url: `data:application/pdf;base64,${base64Str}`,
+  //       };
+
+  //       try {
+  //         await Share.open(options);
+  //       } catch (error) {
+  //         console.error('Error sharing PDF:', error.message);
+  //       }
+  //     } else {
+  //       // Handle other status codes
+  //       console.error('Failed to fetch PDF. Status code:', status);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching PDF:', error.message);
+  //   }
+  // };
   const downloadFileNot = () => {
     Toast.show({
       type: 'error',
@@ -130,29 +163,26 @@ const AuthorizedUser = () => {
     });
   };
 
-  const myCustomShare = async () => {
-    const ImageURL = img;
-    try {
-      const res = await RNFetchBlob.fetch('GET', ImageURL);
-      const status = res.info().status;
-      if (status === 200) {
-        const base64Str = res.base64();
-        const options = {
-          url: `data:image/jpeg;base64,${base64Str}`,
-        };
-        try {
-          const result = await Share.open(options);
-          console.log(result);
-        } catch (e) {
-          e && console.log(e);
-        }
-      } else {
-        // Handle other status codes
-      }
-    } catch (error) {
-      console.log('Error Sharing Image:', error.message);
-    }
-  };
+  // const myCustomShare = async imageUrl => {
+  //   if (!imageUrl) {
+  //     console.log('Image URL missing');
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await ReactNativeBlobUtil.fetch('GET', encodeURI(imageUrl));
+
+  //     const base64Str = res.base64();
+
+  //     const options = {
+  //       url: `data:image/jpeg;base64,${base64Str}`,
+  //     };
+
+  //     await Share.open(options);
+  //   } catch (error) {
+  //     console.log('Error Sharing Image:', error);
+  //   }
+  // };
 
   function capitalizeFirstWord(str) {
     if (typeof str !== 'string') {
@@ -171,45 +201,46 @@ const AuthorizedUser = () => {
     });
     return capitalizedWords.join(' ');
   }
-  const getFileExtension = fileUrl => {
-    return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
-  };
-  const downloadFile = async () => {
-    const fileUrl = img;
+
+  const downloadFile = async fileUrl => {
+    if (!fileUrl) return;
+
+    const { fs, MediaCollection } = ReactNativeBlobUtil;
+
     try {
-      const date = new Date();
-      const file_ext = getFileExtension(fileUrl);
-      const fileExtension = file_ext ? '.' + file_ext[0] : '';
-      const { config, fs } = RNFetchBlob;
-      const RootDir = fs.dirs.PictureDir;
+      // Always force extension (your API is image/jpeg)
+      const fileName = `Notice_${Date.now()}.jpg`;
+      const tempPath = fs.dirs.CacheDir + '/' + fileName;
 
-      const options = {
+      // 1️⃣ Download to cache
+      const res = await ReactNativeBlobUtil.config({
         fileCache: true,
-        addAndroidDownloads: {
-          path:
-            RootDir +
-            '/file_' +
-            Math.floor(date.getTime() + date.getSeconds() / 2) +
-            fileExtension,
-          description: 'Downloading Notice...',
-          notification: true,
-          useDownloadManager: true,
-        },
-      };
+        path: tempPath,
+      }).fetch('GET', fileUrl);
 
-      const res = await config(options).fetch('GET', fileUrl);
-      console.log('res -> ', JSON.stringify(res));
+      // 2️⃣ Save to public Downloads using MediaStore (Android 10+ safe)
+      await MediaCollection.copyToMediaStore(
+        {
+          name: fileName,
+          parentFolder: 'Download',
+          mimeType: 'image/jpeg',
+        },
+        'Download',
+        res.path(),
+      );
+
       Toast.show({
         type: 'success',
-        text1: `Notice Downloaded Successfully.`,
-        position: 'bottom',
-        visibilityTime: 4000,
-        autoHide: true,
-        topOffset: 30,
-        bottomOffset: 50,
+        text1: 'Download completed',
+        position: 'top',
       });
-    } catch (error) {
-      console.log('Error Downloading Notice:', error.message);
+    } catch (err) {
+      console.log('Download failed:', err);
+      Toast.show({
+        type: 'error',
+        text1: 'Download failed',
+        position: 'top',
+      });
     }
   };
 
@@ -426,51 +457,55 @@ const AuthorizedUser = () => {
           options={({ route, navigation }) => ({
             headerTitle: 'VIEWING NOTICE',
             headerRight: () => (
-              setImg(route.params.fileUrl),
-              (
-                <>
-                  <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('Dashbord')}
-                    >
-                      <View>
-                        <Entypo
-                          name={'home'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => downloadFile()}>
-                      <View>
-                        <MaterialCommunityIcons
-                          name={'download-circle-outline'}
-                          style={{
-                            fontSize: 23,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => myCustomShare()}>
-                      <View>
-                        <FontAwesome5
-                          name={'share-alt'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
+              // setImg(route.params.fileUrl),
+              // (
+              // <>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Dashbord')}
+                >
+                  <View>
+                    <Entypo
+                      name={'home'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
                   </View>
-                </>
-              )
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => downloadFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <MaterialCommunityIcons
+                      name={'download-circle-outline'}
+                      style={{
+                        fontSize: 23,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => shareFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <FontAwesome5
+                      name={'share-alt'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              // </>
+              // )
               // name={'share-alt'}
             ),
             headerStyle: {
@@ -508,51 +543,55 @@ const AuthorizedUser = () => {
           options={({ route, navigation }) => ({
             headerTitle: 'VIEWING NOTICE',
             headerRight: () => (
-              setImg(route.params.fileUrl),
-              (
-                <>
-                  <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('Dashbord')}
-                    >
-                      <View>
-                        <Entypo
-                          name={'home'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => downloadFile()}>
-                      <View>
-                        <MaterialCommunityIcons
-                          name={'download-circle-outline'}
-                          style={{
-                            fontSize: 23,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => myCustomShare()}>
-                      <View>
-                        <FontAwesome5
-                          name={'share-alt'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
+              // setImg(route.params.fileUrl),
+              // (
+              //   <>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Dashbord')}
+                >
+                  <View>
+                    <Entypo
+                      name={'home'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
                   </View>
-                </>
-              )
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => downloadFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <MaterialCommunityIcons
+                      name={'download-circle-outline'}
+                      style={{
+                        fontSize: 23,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => shareFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <FontAwesome5
+                      name={'share-alt'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              //   </>
+              // )
             ),
             headerStyle: {
               backgroundColor: theme === 'LIGHT' ? '#b83725' : '#343a40',
@@ -643,7 +682,7 @@ const AuthorizedUser = () => {
           options={({ route, navigation }) => ({
             headerTitle: 'VIEW DOCUMENT',
             headerRight: () => {
-              setImg(route.params.fileUrl);
+              // setImg(route.params.fileUrl);
               return (
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity
@@ -674,7 +713,9 @@ const AuthorizedUser = () => {
                       </View>
                     </TouchableOpacity>
                   ) : (
-                    <TouchableOpacity onPress={() => downloadFile()}>
+                    <TouchableOpacity
+                      onPress={() => downloadFile(route.params.fileUrl)}
+                    >
                       <View>
                         <MaterialCommunityIcons
                           name="download-circle-outline"
@@ -701,7 +742,9 @@ const AuthorizedUser = () => {
                       </View>
                     </TouchableOpacity>
                   ) : (
-                    <TouchableOpacity onPress={() => sharePDF()}>
+                    <TouchableOpacity
+                      onPress={() => shareFile(route.params.fileUrl)}
+                    >
                       <View>
                         <FontAwesome5
                           name="share-alt"
@@ -787,51 +830,55 @@ const AuthorizedUser = () => {
           options={({ route, navigation }) => ({
             headerTitle: 'VIEWING NOTICE',
             headerRight: () => (
-              setImg(route.params.fileUrl),
-              (
-                <>
-                  <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('Dashbord')}
-                    >
-                      <View>
-                        <Entypo
-                          name={'home'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => downloadFile()}>
-                      <View>
-                        <MaterialCommunityIcons
-                          name={'download-circle-outline'}
-                          style={{
-                            fontSize: 23,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => myCustomShare()}>
-                      <View>
-                        <FontAwesome5
-                          name={'share-alt'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
+              // setImg(route.params.fileUrl),
+              // (
+              //   <>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Dashbord')}
+                >
+                  <View>
+                    <Entypo
+                      name={'home'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
                   </View>
-                </>
-              )
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => downloadFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <MaterialCommunityIcons
+                      name={'download-circle-outline'}
+                      style={{
+                        fontSize: 23,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => shareFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <FontAwesome5
+                      name={'share-alt'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              //   </>
+              // )
             ),
             headerStyle: {
               backgroundColor: theme === 'LIGHT' ? '#b83725' : '#343a40',
@@ -940,51 +987,55 @@ const AuthorizedUser = () => {
           options={({ route, navigation }) => ({
             headerTitle: 'VIEWING NOTICE',
             headerRight: () => (
-              setImg(route.params.fileUrl),
-              (
-                <>
-                  <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('Dashbord')}
-                    >
-                      <View>
-                        <Entypo
-                          name={'home'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => downloadFile()}>
-                      <View>
-                        <MaterialCommunityIcons
-                          name={'download-circle-outline'}
-                          style={{
-                            fontSize: 23,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => myCustomShare()}>
-                      <View>
-                        <FontAwesome5
-                          name={'share-alt'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
+              // setImg(route.params.fileUrl),
+              // (
+              //   <>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Dashbord')}
+                >
+                  <View>
+                    <Entypo
+                      name={'home'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
                   </View>
-                </>
-              )
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => downloadFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <MaterialCommunityIcons
+                      name={'download-circle-outline'}
+                      style={{
+                        fontSize: 23,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => shareFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <FontAwesome5
+                      name={'share-alt'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              //   </>
+              // )
             ),
             headerStyle: {
               backgroundColor: theme === 'LIGHT' ? '#b83725' : '#343a40',
@@ -1085,51 +1136,55 @@ const AuthorizedUser = () => {
           options={({ route, navigation }) => ({
             headerTitle: 'VIEWING NOTICE',
             headerRight: () => (
-              setImg(route.params.fileUrl),
-              (
-                <>
-                  <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('Dashbord')}
-                    >
-                      <View>
-                        <Entypo
-                          name={'home'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => downloadFile()}>
-                      <View>
-                        <MaterialCommunityIcons
-                          name={'download-circle-outline'}
-                          style={{
-                            fontSize: 23,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => myCustomShare()}>
-                      <View>
-                        <FontAwesome5
-                          name={'share-alt'}
-                          style={{
-                            fontSize: 20,
-                            marginRight: 20,
-                            color: '#FFF',
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
+              // setImg(route.params.fileUrl),
+              // (
+              //   <>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Dashbord')}
+                >
+                  <View>
+                    <Entypo
+                      name={'home'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
                   </View>
-                </>
-              )
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => downloadFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <MaterialCommunityIcons
+                      name={'download-circle-outline'}
+                      style={{
+                        fontSize: 23,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => shareFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <FontAwesome5
+                      name={'share-alt'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              //   </>
+              // )
             ),
             headerStyle: {
               backgroundColor: theme === 'LIGHT' ? '#b83725' : '#343a40',
@@ -1212,6 +1267,74 @@ const AuthorizedUser = () => {
           }}
         />
         <Stack.Screen
+          name="AuctionAlertServicesViewNotice"
+          component={AuctionAlertServicesViewNotice}
+          options={({ route, navigation }) => ({
+            headerTitle: 'VIEWING NOTICE',
+            headerRight: () => (
+              // setImg(route.params.fileUrl),
+              // (
+              //   <>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Dashbord')}
+                >
+                  <View>
+                    <Entypo
+                      name={'home'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => downloadFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <MaterialCommunityIcons
+                      name={'download-circle-outline'}
+                      style={{
+                        fontSize: 23,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => shareFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <FontAwesome5
+                      name={'share-alt'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              //   </>
+              // )
+            ),
+            headerStyle: {
+              backgroundColor: theme === 'LIGHT' ? '#b83725' : '#343a40',
+              color: '#FFF', //Set Header color
+            },
+            headerTitleStyle: {
+              color: 'white',
+              fontWeight: 'bold',
+            },
+            headerTintColor: 'white',
+            headerBackTitleVisible: false,
+          })}
+        />
+        <Stack.Screen
           name="TownPlanningServicesCount"
           component={TownPlanningServicesCount}
           options={{
@@ -1227,6 +1350,74 @@ const AuthorizedUser = () => {
             headerTintColor: 'white',
             headerBackTitleVisible: false,
           }}
+        />
+        <Stack.Screen
+          name="TownPlanningServicesViewNotice"
+          component={TownPlanningServicesViewNotice}
+          options={({ route, navigation }) => ({
+            headerTitle: 'VIEWING NOTICE',
+            headerRight: () => (
+              // setImg(route.params.fileUrl),
+              // (
+              //   <>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Dashbord')}
+                >
+                  <View>
+                    <Entypo
+                      name={'home'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => downloadFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <MaterialCommunityIcons
+                      name={'download-circle-outline'}
+                      style={{
+                        fontSize: 23,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => shareFile(route.params.fileUrl)}
+                >
+                  <View>
+                    <FontAwesome5
+                      name={'share-alt'}
+                      style={{
+                        fontSize: 20,
+                        marginRight: 20,
+                        color: '#FFF',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              //   </>
+              // )
+            ),
+            headerStyle: {
+              backgroundColor: theme === 'LIGHT' ? '#b83725' : '#343a40',
+              color: '#FFF', //Set Header color
+            },
+            headerTitleStyle: {
+              color: 'white',
+              fontWeight: 'bold',
+            },
+            headerTintColor: 'white',
+            headerBackTitleVisible: false,
+          })}
         />
         <Stack.Screen
           name="AddTPServices"

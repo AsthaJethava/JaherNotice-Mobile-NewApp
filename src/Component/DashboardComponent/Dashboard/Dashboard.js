@@ -30,7 +30,7 @@ import {
   Appbar,
 } from 'react-native-paper';
 import Jahernoticelog from '../../../Imeges/Jahernotice_logo.png';
-import Jahernoticelogw from '../../../Imeges/JN_logo_White.png';
+import Jahernoticelogw from '../../../Imeges/111.png';
 import LandRecords from '../../../Imeges/Icon_land_records_l.png';
 
 import Profile from '../../../Imeges/Profile.png';
@@ -219,16 +219,16 @@ const App = ({ route, navigation }) => {
 
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [districtPlaceholder, setDistrictPlaceholder] = useState(
-    'Select Service Name',
+    'Select Property Type',
   );
   const [handleSurveyNoSelectP, sethandleSurveyNoSelectP] = useState();
   const [handleSurveyNoSelectPkey, sethandleSurveyNoSelectPkey] = useState();
   useEffect(() => {
     // Taluka change: Update placeholder values based on selected service
     if (selectedDistrict === selectedDistrict) {
-      sethandleSurveyNoSelectP('Select Service Name');
+      sethandleSurveyNoSelectP('Select Property Type');
       sethandleSurveyNoSelectPkey(selectedDistrict);
-      setDistrictPlaceholder('Select Service Name');
+      setDistrictPlaceholder('Select Property Type');
     }
   }, [selectedDistrict]);
   const dataFetch = async () => {
@@ -578,7 +578,7 @@ const App = ({ route, navigation }) => {
                                     <View
                                       style={{
                                         ...styles.rowcard,
-                                        ...styles.border,
+                                        // ...styles.border,
                                       }}
                                     >
                                       <View style={styles.column}>
@@ -803,7 +803,7 @@ const App = ({ route, navigation }) => {
                                         <View
                                           style={{
                                             ...styles.rowcard,
-                                            ...styles.border,
+                                            // ...styles.border,
                                           }}
                                         >
                                           <View style={styles.column}>
@@ -1009,7 +1009,7 @@ const App = ({ route, navigation }) => {
                         </>
                       )}
                     </Card>
-                    <LinearGradient
+                    {/* <LinearGradient
                       style={styles.linearGradientn}
                       colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
                       start={{ x: 0, y: 0 }}
@@ -1017,7 +1017,7 @@ const App = ({ route, navigation }) => {
                       locations={[0.18, 1, 1]}
                     >
                       <Text></Text>
-                    </LinearGradient>
+                    </LinearGradient> */}
                   </Fragment>
                 }
 
@@ -1066,7 +1066,7 @@ const App = ({ route, navigation }) => {
                                     <View
                                       style={{
                                         ...styles.rowcard,
-                                        ...styles.border,
+                                        // ...styles.border,
                                       }}
                                     >
                                       <View style={styles.column}>
@@ -1253,7 +1253,7 @@ const App = ({ route, navigation }) => {
                           </Fragment>
                         )}
                       </Card>
-                      <LinearGradient
+                      {/* <LinearGradient
                         style={styles.linearGradient}
                         colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
                         start={{ x: 0, y: 0 }}
@@ -1261,7 +1261,7 @@ const App = ({ route, navigation }) => {
                         locations={[0.18, 1, 1]}
                       >
                         <Text></Text>
-                      </LinearGradient>
+                      </LinearGradient> */}
                     </Fragment>
                   }
                   {/* ) : null} */}
@@ -1315,7 +1315,7 @@ const App = ({ route, navigation }) => {
                                     <View
                                       style={{
                                         ...styles.rowcard,
-                                        ...styles.border,
+                                        // ...styles.border,
                                       }}
                                     >
                                       <View style={styles.column}>
@@ -1361,7 +1361,7 @@ const App = ({ route, navigation }) => {
                                                   : '#ffffff',
                                             }}
                                           >
-                                            Locations Subscribed
+                                            Districts Subscribed
                                           </Text>
                                         </View>
                                       </View>
@@ -1521,7 +1521,7 @@ const App = ({ route, navigation }) => {
                           </Fragment>
                         )}
                       </Card>
-                      <LinearGradient
+                      {/* <LinearGradient
                         style={styles.linearGradient}
                         colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
                         start={{ x: 0, y: 0 }}
@@ -1529,7 +1529,7 @@ const App = ({ route, navigation }) => {
                         locations={[0.18, 1, 1]}
                       >
                         <Text></Text>
-                      </LinearGradient>
+                      </LinearGradient> */}
                     </Fragment>
                   )}
                   {/* )} */}
@@ -1580,7 +1580,7 @@ const App = ({ route, navigation }) => {
                                   <View
                                     style={{
                                       ...styles.rowcard,
-                                      ...styles.border,
+                                      // ...styles.border,
                                     }}
                                   >
                                     <View style={styles.column}>
@@ -1777,7 +1777,7 @@ const App = ({ route, navigation }) => {
                         </Fragment>
                       )}
                     </Card>
-                    <LinearGradient
+                    {/* <LinearGradient
                       style={styles.linearGradient}
                       colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
                       start={{ x: 0, y: 0 }}
@@ -1785,7 +1785,7 @@ const App = ({ route, navigation }) => {
                       locations={[0.18, 1, 1]}
                     >
                       <Text></Text>
-                    </LinearGradient>
+                    </LinearGradient> */}
                   </Fragment>
                 }
                 {/*  IsActivePerTaluka === null || IsActivePerTaluka === '' || (Array.isArray(IsActivePerTaluka) && IsActivePerTaluka.length === 0)
@@ -1836,7 +1836,7 @@ const App = ({ route, navigation }) => {
                                     <View
                                       style={{
                                         ...styles.rowcard,
-                                        ...styles.border,
+                                        // ...styles.border,
                                       }}
                                     >
                                       <View style={styles.column}>
@@ -2024,7 +2024,7 @@ const App = ({ route, navigation }) => {
                           </Fragment>
                         )}
                       </Card>
-                      <LinearGradient
+                      {/* <LinearGradient
                         style={styles.linearGradient}
                         colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
                         start={{ x: 0, y: 0 }}
@@ -2032,7 +2032,7 @@ const App = ({ route, navigation }) => {
                         locations={[0.18, 1, 1]}
                       >
                         <Text></Text>
-                      </LinearGradient>
+                      </LinearGradient> */}
                     </Fragment>
                   }
                 </Fragment>
@@ -2073,7 +2073,7 @@ const App = ({ route, navigation }) => {
                               item => item.key === selectedValue,
                             );
                             const dynamicDistrictPlaceholder =
-                              'Select Service Name';
+                              'Select Property Type';
                             setDistrictPlaceholder(dynamicDistrictPlaceholder);
                             console.log(selectedService.value);
                             navigation.navigate('TitleSearch', {
@@ -2086,7 +2086,7 @@ const App = ({ route, navigation }) => {
                           save="key"
                           data={datas}
                           placeholder={
-                            districtPlaceholder || 'Select Service Name'
+                            districtPlaceholder || 'Select Property Type'
                           }
                           boxStyles={{
                             marginTop: 4,
@@ -2096,7 +2096,7 @@ const App = ({ route, navigation }) => {
                           }}
                           dropdownStyles={{ backgroundColor: '#ffffff' }}
                           defaultValue={
-                            districtPlaceholder || 'Select Service Name'
+                            districtPlaceholder || 'Select Property Type'
                           }
                           onSearch={search => {
                             if (search.length >= 3) {
@@ -2112,7 +2112,7 @@ const App = ({ route, navigation }) => {
                         />
                       </View>
                     </Card>
-                    <LinearGradient
+                    {/* <LinearGradient
                       style={styles.linearGradient}
                       colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
                       start={{ x: 0, y: 0 }}
@@ -2120,7 +2120,7 @@ const App = ({ route, navigation }) => {
                       locations={[0.18, 1, 1]}
                     >
                       <Text></Text>
-                    </LinearGradient>
+                    </LinearGradient> */}
                   </Fragment>
                 )}
               </Fragment>
@@ -2266,13 +2266,13 @@ const App = ({ route, navigation }) => {
               >
                 All Services
               </Text>
-              <LinearGradient
+              {/* <LinearGradient
                 style={styles.linearGradienta}
                 colors={['rgb(216, 216, 216)', 'rgb(204, 204, 204)']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 locations={[0.18, 1, 1]}
-              ></LinearGradient>
+              ></LinearGradient> */}
               <View style={styles.Sviewa}>
                 <View style={styles.imgcontaier}>
                   <View style={styles.vcard}>
@@ -2405,7 +2405,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 110, // ✅ predictable
     height: 45, // ✅ enough for zoom
-    resizeMode: 'contain', // ✅ never crop
+    resizeMode: 'cover', // ✅ never crop
     marginLeft: 12,
   },
   Containerimg: {

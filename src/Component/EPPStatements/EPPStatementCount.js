@@ -245,7 +245,7 @@ const VillageTalukaDistrict = ({ route, navigation }) => {
                             item.survey_number !== null ? (
                               <View style={style.rowc}>
                                 <Text style={style.labelc}>
-                                  City/Survey No:
+                                  City/Revenue Survey No:
                                 </Text>
                                 <Text style={style.valuec}>
                                   {capitalizeFirstWord(item.survey_number)}
